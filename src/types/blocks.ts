@@ -14,6 +14,8 @@ export interface BlockProps {
   borderStyle?: 'solid' | 'dashed' | 'dotted';
   borderWidth?: string;
   height?: string;
+  maxWidth?: string;
+  margin?: string;
 }
 
 export interface Block {

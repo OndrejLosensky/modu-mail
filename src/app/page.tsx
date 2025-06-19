@@ -132,7 +132,7 @@ export default function Home() {
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <EditorLayout>
+      <EditorLayout blocks={blocks}>
         <ComponentsSidebar />
         <EmailCanvas 
           blocks={blocks} 
