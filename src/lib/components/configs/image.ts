@@ -1,75 +1,114 @@
-import { ComponentConfig } from '@/types/editor';
-import { styleGenerator } from '@/lib/email/styles';
+import { ComponentBuilder } from '../ComponentBuilder';
+import { ComponentCategory } from './ComponentCategories';
+import { PropertyCategory } from '@/types/editor';
 
-export const imageComponentConfig: ComponentConfig = {
-  id: 'image',
-  type: 'image',
-  name: 'Image',
-  description: 'Add and customize images',
-  category: 'media',
-  icon: 'image',
-  properties: [
-    {
-      key: 'src',
-      type: 'url',
-      label: 'Image URL',
-      defaultValue: '',
-      category: 'basic',
-      validation: {
-        required: true,
-        pattern: '^https?://.+'
-      }
-    },
-    {
-      key: 'alt',
-      type: 'text',
-      label: 'Alt Text',
-      defaultValue: '',
-      category: 'basic',
-      description: 'Alternative text for accessibility'
-    },
-    {
-      key: 'width',
-      type: 'select',
-      label: 'Width',
-      defaultValue: '100%',
-      category: 'layout',
-      options: [
-        { label: 'Full Width', value: '100%' },
-        { label: 'Half Width', value: '50%' },
-        { label: 'Quarter Width', value: '25%' }
-      ]
-    },
-    {
-      key: 'alignment',
-      type: 'alignment',
-      label: 'Alignment',
-      defaultValue: 'center',
-      category: 'layout'
-    },
-    {
-      key: 'borderRadius',
-      type: 'size',
-      label: 'Corner Radius',
-      defaultValue: '0px',
-      category: 'style'
-    },
-    {
-      key: 'link',
-      type: 'url',
-      label: 'Link URL',
-      defaultValue: '',
-      category: 'advanced',
-      description: 'Make the image clickable (optional)'
-    }
-  ],
-  styles: {
-    ...styleGenerator.applyPresetWithResponsive('image'),
-    responsive: {
-      '480px': [
-        { property: 'width', value: '100%' },
-        { property: 'margin', value: '0 auto' }
-      ]
-    }
-  }
-}; 
+interface ImageBlockProps {
+  src: string;
+  alt: string;
+  width: string;
+  height: string;
+  alignment: string;
+  borderRadius: string;
+  link: string;
+}
+
+const { component, html } = new ComponentBuilder<ImageBlockProps>('image')
+  .setName('Image')
+  .setDescription('Add an image to your email')
+  .setCategory(ComponentCategory.Media)
+  .setIcon('image')
+  .addProperty({
+    key: 'src',
+    type: 'url',
+    label: 'Image URL',
+    category: PropertyCategory.Content,
+    defaultValue: 'https://via.placeholder.com/600x400',
+  })
+  .addProperty({
+    key: 'alt',
+    type: 'text',
+    label: 'Alt Text',
+    category: PropertyCategory.Content,
+    defaultValue: 'Image description',
+  })
+  .addProperty({
+    key: 'width',
+    type: 'text',
+    label: 'Width',
+    category: PropertyCategory.Layout,
+    defaultValue: '100%',
+  })
+  .addProperty({
+    key: 'height',
+    type: 'text',
+    label: 'Height',
+    category: PropertyCategory.Layout,
+    defaultValue: 'auto',
+  })
+  .addProperty({
+    key: 'alignment',
+    type: 'select',
+    label: 'Alignment',
+    category: PropertyCategory.Layout,
+    defaultValue: 'center',
+    options: [
+      { label: 'Left', value: 'left' },
+      { label: 'Center', value: 'center' },
+      { label: 'Right', value: 'right' },
+    ],
+  })
+  .addProperty({
+    key: 'borderRadius',
+    type: 'select',
+    label: 'Border Radius',
+    category: PropertyCategory.Style,
+    defaultValue: '0px',
+    options: [
+      { label: 'None', value: '0px' },
+      { label: 'Small', value: '4px' },
+      { label: 'Medium', value: '8px' },
+      { label: 'Large', value: '16px' },
+      { label: 'Round', value: '9999px' },
+    ],
+  })
+  .addProperty({
+    key: 'link',
+    type: 'url',
+    label: 'Link URL',
+    category: PropertyCategory.Content,
+    defaultValue: '',
+  })
+  .setHtmlTag('table')
+  .setAttributeGenerator((block) => ({
+    role: 'presentation',
+    cellpadding: '0',
+    cellspacing: '0',
+    border: '0',
+    width: '100%',
+    align: block.props.alignment,
+  }))
+  .setInnerContentGenerator((block) => {
+    const imageHtml = `<img 
+      src="${block.props.src}" 
+      alt="${block.props.alt}" 
+      width="${block.props.width}" 
+      height="${block.props.height}"
+      style="display: block; max-width: 100%; height: auto; border-radius: ${block.props.borderRadius};"
+    />`;
+
+    const content = block.props.link 
+      ? `<a href="${block.props.link}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">${imageHtml}</a>`
+      : imageHtml;
+
+    return `
+      <tr>
+        <td align="${block.props.alignment}">
+          ${content}
+        </td>
+      </tr>
+    `;
+  })
+  .build();
+
+export const imageConfig = component;
+export const imageHtmlConfig = html; 

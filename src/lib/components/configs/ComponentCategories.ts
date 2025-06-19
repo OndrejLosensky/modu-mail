@@ -1,10 +1,10 @@
 export enum ComponentCategory {
-  LAYOUT = 'layout',
-  CONTENT = 'content',
-  MEDIA = 'media',
-  INTERACTIVE = 'interactive',
-  SOCIAL = 'social',
-  CUSTOM = 'custom'
+  Layout = 'layout',
+  Content = 'content',
+  Interactive = 'interactive',
+  Media = 'media',
+  Social = 'social',
+  Custom = 'custom'
 }
 
 export interface CategoryConfig {
@@ -15,34 +15,34 @@ export interface CategoryConfig {
 }
 
 export const COMPONENT_CATEGORIES: Record<ComponentCategory, CategoryConfig> = {
-  [ComponentCategory.LAYOUT]: {
-    id: ComponentCategory.LAYOUT,
+  [ComponentCategory.Layout]: {
+    id: ComponentCategory.Layout,
     label: 'Layout',
     description: 'Structural components like containers, columns, and spacers',
   },
-  [ComponentCategory.CONTENT]: {
-    id: ComponentCategory.CONTENT,
+  [ComponentCategory.Content]: {
+    id: ComponentCategory.Content,
     label: 'Content',
     description: 'Text, headings, and other content elements',
   },
-  [ComponentCategory.MEDIA]: {
-    id: ComponentCategory.MEDIA,
+  [ComponentCategory.Media]: {
+    id: ComponentCategory.Media,
     label: 'Media',
     description: 'Images, videos, and other media components',
   },
-  [ComponentCategory.INTERACTIVE]: {
-    id: ComponentCategory.INTERACTIVE,
+  [ComponentCategory.Interactive]: {
+    id: ComponentCategory.Interactive,
     label: 'Interactive',
     description: 'Buttons, links, and other clickable elements',
   },
-  [ComponentCategory.SOCIAL]: {
-    id: ComponentCategory.SOCIAL,
+  [ComponentCategory.Social]: {
+    id: ComponentCategory.Social,
     label: 'Social',
-    description: 'Social media links and sharing components',
+    description: 'Social media components and integrations',
   },
-  [ComponentCategory.CUSTOM]: {
-    id: ComponentCategory.CUSTOM,
+  [ComponentCategory.Custom]: {
+    id: ComponentCategory.Custom,
     label: 'Custom',
-    description: 'User-defined custom components',
-  }
+    description: 'Custom components and templates',
+  },
 }; 

@@ -1,69 +1,97 @@
-import { ComponentConfig } from '@/types/editor';
-import { styleGenerator } from '@/lib/email/styles';
+import { ComponentBuilder } from '../ComponentBuilder';
+import { ComponentCategory } from './ComponentCategories';
+import { PropertyCategory } from '@/types/editor';
 
-export const dividerComponentConfig: ComponentConfig = {
-  id: 'divider',
-  type: 'divider',
-  name: 'Divider',
-  description: 'Add a horizontal line to separate content',
-  category: 'layout',
-  icon: 'minus',
-  properties: [
-    {
-      key: 'style',
-      type: 'select',
-      label: 'Style',
-      defaultValue: 'solid',
-      category: 'style',
-      options: [
-        { label: 'Solid', value: 'solid' },
-        { label: 'Dashed', value: 'dashed' },
-        { label: 'Dotted', value: 'dotted' }
-      ]
-    },
-    {
-      key: 'color',
-      type: 'color',
-      label: 'Color',
-      defaultValue: '#E5E7EB',
-      category: 'style'
-    },
-    {
-      key: 'width',
-      type: 'select',
-      label: 'Width',
-      defaultValue: '100%',
-      category: 'layout',
-      options: [
-        { label: 'Full Width', value: '100%' },
-        { label: 'Three Quarters', value: '75%' },
-        { label: 'Half Width', value: '50%' }
-      ]
-    },
-    {
-      key: 'thickness',
-      type: 'select',
-      label: 'Thickness',
-      defaultValue: '1px',
-      category: 'style',
-      options: [
-        { label: 'Thin', value: '1px' },
-        { label: 'Medium', value: '2px' },
-        { label: 'Thick', value: '4px' }
-      ]
-    },
-    {
-      key: 'spacing',
-      type: 'select',
-      label: 'Spacing',
-      defaultValue: 'medium',
-      category: 'layout',
-      options: [
-        { label: 'Small', value: '10px' },
-        { label: 'Medium', value: '20px' },
-        { label: 'Large', value: '40px' }
-      ]
-    }
-  ],
-  styles: styleGenerator.applyPresetWithResponsive('divider')
-}; 
+interface DividerBlockProps {
+  color: string;
+  style: string;
+  width: string;
+  height: string;
+  alignment: string;
+}
+
+const { component, html } = new ComponentBuilder<DividerBlockProps>('divider')
+  .setName('Divider')
+  .setDescription('Add a horizontal line to separate content')
+  .setCategory(ComponentCategory.Content)
+  .setIcon('divider')
+  .addProperty({
+    key: 'color',
+    type: 'color',
+    label: 'Color',
+    category: PropertyCategory.Style,
+    defaultValue: '#e5e7eb',
+  })
+  .addProperty({
+    key: 'style',
+    type: 'select',
+    label: 'Style',
+    category: PropertyCategory.Style,
+    defaultValue: 'solid',
+    options: [
+      { label: 'Solid', value: 'solid' },
+      { label: 'Dashed', value: 'dashed' },
+      { label: 'Dotted', value: 'dotted' },
+    ],
+  })
+  .addProperty({
+    key: 'width',
+    type: 'select',
+    label: 'Width',
+    category: PropertyCategory.Layout,
+    defaultValue: '100%',
+    options: [
+      { label: 'Full Width', value: '100%' },
+      { label: '75%', value: '75%' },
+      { label: '50%', value: '50%' },
+      { label: '25%', value: '25%' },
+    ],
+  })
+  .addProperty({
+    key: 'height',
+    type: 'select',
+    label: 'Height',
+    category: PropertyCategory.Style,
+    defaultValue: '1px',
+    options: [
+      { label: 'Thin (1px)', value: '1px' },
+      { label: 'Medium (2px)', value: '2px' },
+      { label: 'Thick (4px)', value: '4px' },
+    ],
+  })
+  .addProperty({
+    key: 'alignment',
+    type: 'select',
+    label: 'Alignment',
+    category: PropertyCategory.Layout,
+    defaultValue: 'center',
+    options: [
+      { label: 'Left', value: 'left' },
+      { label: 'Center', value: 'center' },
+      { label: 'Right', value: 'right' },
+    ],
+  })
+  .setHtmlTag('table')
+  .setAttributeGenerator((block) => ({
+    role: 'presentation',
+    cellpadding: '0',
+    cellspacing: '0',
+    border: '0',
+    width: '100%',
+    align: block.props.alignment,
+  }))
+  .setInnerContentGenerator((block) => `
+    <tr>
+      <td align="${block.props.alignment}">
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${block.props.width}" align="${block.props.alignment}">
+          <tr>
+            <td style="border-top: ${block.props.height} ${block.props.style} ${block.props.color}; font-size: 0; line-height: 0;">&nbsp;</td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  `)
+  .build();
+
+export const dividerConfig = component;
+export const dividerHtmlConfig = html; 

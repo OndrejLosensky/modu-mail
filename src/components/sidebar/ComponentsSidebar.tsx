@@ -6,7 +6,47 @@ const categoryLabels = {
   content: 'Content',
   media: 'Media',
   interactive: 'Interactive',
-  layout: 'Layout'
+  layout: 'Layout',
+  social: 'Social'
+};
+
+interface DraggableComponentProps {
+  type: string;
+  icon: string;
+  label: string;
+  description: string;
+}
+
+const DraggableComponent: React.FC<DraggableComponentProps> = ({ type, icon, label, description }) => {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: `new-${type}`,
+    data: {
+      type,
+      isNew: true
+    }
+  });
+
+  const style = transform ? {
+    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+  } : undefined;
+
+  return (
+    <div
+      ref={setNodeRef}
+      {...listeners}
+      {...attributes}
+      style={style}
+      className="p-3 bg-white rounded-lg shadow-sm border border-gray-100 cursor-move hover:border-blue-500 hover:shadow-md transition-all"
+    >
+      <div className="flex items-center space-x-3">
+        <span className="text-xl">{icon}</span>
+        <div>
+          <h4 className="text-sm font-medium text-gray-900">{label}</h4>
+          <p className="text-xs text-gray-500">{description}</p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export const ComponentsSidebar: React.FC = () => {
@@ -45,49 +85,6 @@ export const ComponentsSidebar: React.FC = () => {
             </div>
           </div>
         ))}
-      </div>
-    </div>
-  );
-};
-
-interface DraggableComponentProps {
-  type: string;
-  icon: string;
-  label: string;
-  description: string;
-}
-
-const DraggableComponent: React.FC<DraggableComponentProps> = ({ type, icon, label, description }) => {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: `new-${type}`,
-    data: {
-      type,
-      isNew: true,
-    },
-  });
-
-  return (
-    <div
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
-      className={`
-        group flex items-start gap-3 p-3 border rounded-lg cursor-grab active:cursor-grabbing transition-all
-        ${isDragging ? 'opacity-50 scale-105 border-blue-200 bg-blue-50' : 'hover:bg-gray-50 hover:border-gray-300'}
-        bg-white border-gray-200
-      `}
-    >
-      <div className="flex items-center justify-center w-10 h-10 rounded-md bg-gray-50 text-lg text-gray-700 shrink-0">
-        {icon}
-      </div>
-      <div className="flex flex-col min-w-0 flex-1">
-        <span className="text-sm font-medium text-gray-900">{label}</span>
-        <span className="text-xs text-gray-500 truncate">{description}</span>
-      </div>
-      <div className="flex items-center self-center opacity-0 group-hover:opacity-100 transition-opacity">
-        <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5v14m6-14v14M4 9h16M4 15h16" />
-        </svg>
       </div>
     </div>
   );

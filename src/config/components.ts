@@ -80,5 +80,46 @@ export const components: ComponentConfig[] = [
       spacing: '0.5em',
       textAlign: 'left'
     }
+  },
+  {
+    type: 'spacer',
+    icon: '↕',
+    label: 'Spacer',
+    description: 'Add vertical spacing between elements',
+    category: 'layout',
+    defaultProps: {
+      height: '20px'
+    }
+  },
+  {
+    type: 'social',
+    icon: '🔗',
+    label: 'Social Links',
+    description: 'Add social media links with icons',
+    category: 'interactive',
+    defaultProps: {
+      networks: [
+        { platform: 'facebook', url: 'https://facebook.com' },
+        { platform: 'twitter', url: 'https://twitter.com' },
+        { platform: 'linkedin', url: 'https://linkedin.com' }
+      ],
+      iconSize: '24px',
+      spacing: '16px',
+      alignment: 'center'
+    }
+  },
+  {
+    type: 'columns',
+    icon: '⫼',
+    label: 'Two Columns',
+    description: 'Create a two-column layout',
+    category: 'layout',
+    defaultProps: {
+      columnRatio: '1:1',
+      spacing: '20px',
+      verticalAlignment: 'top',
+      backgroundColor: 'transparent',
+      padding: '0px'
+    }
   }
 ]; 

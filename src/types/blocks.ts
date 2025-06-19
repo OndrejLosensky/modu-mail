@@ -1,51 +1,47 @@
-import { ComponentCategory } from '@/lib/components/configs/ComponentCategories';
-
-export type BlockType = 'text' | 'image' | 'button' | 'divider' | 'container' | 'list';
+export type BlockType = 'text' | 'button' | 'image' | 'divider' | 'spacer' | 'social' | 'columns' | 'list';
 
 export type TextAlignment = 'left' | 'center' | 'right' | 'justify';
+export type ListType = 'ordered' | 'unordered';
+export type VerticalAlignment = 'top' | 'middle' | 'bottom';
 export type BorderStyle = 'solid' | 'dashed' | 'dotted';
 export type ObjectFit = 'contain' | 'cover' | 'fill' | 'none' | 'scale-down';
 
 export interface CommonBlockProps {
+  id?: string;
   className?: string;
-  style?: React.CSSProperties;
+  style?: Record<string, string>;
 }
 
-export interface TextBlockProps extends CommonBlockProps {
+export interface TextBlockProps {
   text: string;
   fontSize?: string;
   color?: string;
-  textAlign?: TextAlignment;
+  textAlign?: string;
+  lineHeight?: string;
+  [key: string]: unknown;
 }
 
-export interface ButtonBlockProps extends CommonBlockProps {
+export interface ButtonBlockProps {
   text: string;
   href: string;
-  backgroundColor?: string;
-  color?: string;
   fontSize?: string;
-  padding?: string;
-  borderRadius?: string;
-  textAlign?: TextAlignment;
-  border?: string;
+  color?: string;
+  backgroundColor?: string;
+  [key: string]: unknown;
 }
 
-export interface ImageBlockProps extends CommonBlockProps {
+export interface ImageBlockProps {
   src: string;
   alt: string;
   width?: string;
   height?: string;
-  objectFit?: ObjectFit;
-  borderRadius?: string;
-  align?: TextAlignment;
+  [key: string]: unknown;
 }
 
-export interface DividerBlockProps extends CommonBlockProps {
+export interface DividerBlockProps {
   color?: string;
   height?: string;
-  width?: string;
-  borderStyle?: BorderStyle;
-  margin?: string;
+  [key: string]: unknown;
 }
 
 export interface ContainerBlockProps extends CommonBlockProps {
@@ -53,16 +49,46 @@ export interface ContainerBlockProps extends CommonBlockProps {
   padding?: string;
   backgroundColor?: string;
   align?: TextAlignment;
+  [key: string]: unknown;
 }
 
 export interface ListBlockProps extends CommonBlockProps {
   items: string[];
-  listType: 'ordered' | 'unordered';
+  listType: ListType;
   fontSize?: string;
   color?: string;
   textAlign?: TextAlignment;
   bulletColor?: string;
   spacing?: string;
+  [key: string]: unknown;
+}
+
+export interface SpacerBlockProps {
+  height: string;
+  [key: string]: unknown;
+}
+
+export interface SocialNetwork {
+  platform: string;
+  url: string;
+  [key: string]: unknown;
+}
+
+export interface SocialBlockProps {
+  networks: SocialNetwork[];
+  iconSize?: string;
+  spacing?: string;
+  alignment?: string;
+  [key: string]: unknown;
+}
+
+export interface ColumnsBlockProps {
+  columnRatio: string;
+  spacing?: string;
+  verticalAlignment?: string;
+  backgroundColor?: string;
+  padding?: string;
+  [key: string]: unknown;
 }
 
 export type BlockProps = 
@@ -71,13 +97,15 @@ export type BlockProps =
   | ImageBlockProps 
   | DividerBlockProps 
   | ContainerBlockProps
-  | ListBlockProps;
+  | ListBlockProps
+  | SpacerBlockProps
+  | SocialBlockProps
+  | ColumnsBlockProps;
 
-export interface Block {
+export interface Block<T = Record<string, unknown>> {
   id: string;
   type: BlockType;
-  category?: ComponentCategory;
-  props: BlockProps;
+  props: T;
 }
 
 export interface EmailTemplate {

@@ -1,10 +1,12 @@
 import React from 'react';
 import { DragOverlay as DndDragOverlay } from '@dnd-kit/core';
-import { Block } from '@/types/blocks';
+import { Block, TextBlockProps, ButtonBlockProps, ImageBlockProps, DividerBlockProps, SpacerBlockProps, SocialBlockProps, ColumnsBlockProps } from '@/types/blocks';
 import { BlockRenderer } from '@/blocks/BlockRenderer';
 
+type BlockProps = TextBlockProps | ButtonBlockProps | ImageBlockProps | DividerBlockProps | SpacerBlockProps | SocialBlockProps | ColumnsBlockProps;
+
 interface DragOverlayProps {
-  draggedBlock?: Block;
+  draggedBlock?: Block<BlockProps>;
   draggedComponent?: {
     type: string;
     icon: string;
@@ -12,16 +14,13 @@ interface DragOverlayProps {
   };
 }
 
-export const DragOverlay: React.FC<DragOverlayProps> = ({
-  draggedBlock,
-  draggedComponent,
-}) => {
+export function DragOverlay({ draggedBlock, draggedComponent }: DragOverlayProps) {
   if (!draggedBlock && !draggedComponent) return null;
 
   return (
-    <DndDragOverlay dropAnimation={null}>
+    <DndDragOverlay>
       {draggedBlock ? (
-        <div className="w-[calc(100%-2.5rem)] opacity-50">
+        <div className="opacity-50 pointer-events-none">
           <BlockRenderer
             block={draggedBlock}
             isSelected={false}
@@ -30,17 +29,11 @@ export const DragOverlay: React.FC<DragOverlayProps> = ({
           />
         </div>
       ) : draggedComponent ? (
-        <div className="w-64 p-3 border rounded-lg bg-white shadow-md">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-8 h-8 rounded bg-gray-50 text-lg text-gray-700">
-              {draggedComponent.icon}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm text-gray-900 font-medium">{draggedComponent.label}</span>
-            </div>
-          </div>
+        <div className="bg-white rounded-lg shadow-lg p-4 opacity-50 pointer-events-none">
+          <span className="material-icons">{draggedComponent.icon}</span>
+          <span className="ml-2">{draggedComponent.label}</span>
         </div>
       ) : null}
     </DndDragOverlay>
   );
-}; 
+} 

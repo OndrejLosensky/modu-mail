@@ -1,6 +1,12 @@
+import { ComponentCategory } from '@/lib/components/configs/ComponentCategories';
+
 export type PropertyType = 'text' | 'color' | 'size' | 'select' | 'number' | 'url' | 'alignment' | 'boolean';
-export type ComponentCategory = 'content' | 'layout' | 'interactive' | 'media';
-export type PropertyCategory = 'basic' | 'advanced' | 'layout' | 'style' | 'email';
+export enum PropertyCategory {
+  Content = 'content',
+  Style = 'style',
+  Layout = 'layout',
+  Advanced = 'advanced'
+}
 export type PropertyValue = string | number | boolean | null;
 
 export interface PropertyConfig {
@@ -8,11 +14,11 @@ export interface PropertyConfig {
   type: PropertyType;
   label: string;
   description?: string;
-  defaultValue: PropertyValue;
+  defaultValue: string | number | boolean;
   category: PropertyCategory;
   options?: Array<{
     label: string;
-    value: PropertyValue;
+    value: string | number | boolean;
   }>;
   validation?: {
     required?: boolean;
@@ -45,20 +51,22 @@ export interface StyleConfig {
       fallback?: string | number;
     };
   };
+  responsive?: boolean;
 }
 
 export interface ComponentConfig {
   id: string;
   type: string;
   name: string;
-  description?: string;
+  description: string;
   category: ComponentCategory;
   icon: string;
   properties: PropertyConfig[];
   styles: {
     base: StyleConfig[];
     responsive?: {
-      [breakpoint: string]: StyleConfig[];
+      mobile?: StyleConfig[];
+      tablet?: StyleConfig[];
     };
   };
   template?: {

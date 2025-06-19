@@ -4,25 +4,14 @@ export interface HTMLExportOptions {
   minify?: boolean;
   doctype?: boolean;
   wrapWithContainer?: boolean;
-  containerStyles?: {
-    maxWidth?: string;
-    margin?: string;
-    padding?: string;
-    backgroundColor?: string;
-  };
+  containerStyles?: Record<string, string>;
 }
 
-export interface BlockRenderer {
-  (block: Block): string;
-}
-
-export interface StyleGenerator {
-  (block: Block): Record<string, string | number>;
-}
+export type StyleGenerator<T = Record<string, unknown>> = (block: Block<T>) => Record<string, string>;
 
 export interface BlockHTMLConfig {
   tag: string;
-  styleGenerator: StyleGenerator;
-  attributeGenerator?: (block: Block) => Record<string, string>;
-  innerContentGenerator?: (block: Block) => string;
+  styleGenerator?: StyleGenerator<Record<string, unknown>>;
+  attributeGenerator?: (block: Block<Record<string, unknown>>) => Record<string, string | Record<string, string>>;
+  innerContentGenerator?: (block: Block<Record<string, unknown>>) => string;
 } 

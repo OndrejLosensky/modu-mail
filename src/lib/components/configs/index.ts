@@ -1,29 +1,39 @@
 import { componentRegistry } from '../registry';
-import { textComponentConfig } from './text';
-import { buttonComponentConfig } from './button';
-import { imageComponentConfig } from './image';
-import { dividerComponentConfig } from './divider';
+import { textConfig } from './text';
+import { buttonConfig } from './button';
+import { imageConfig } from './image';
+import { dividerConfig } from './divider';
+import { spacerConfig } from './spacer';
+import { socialConfig } from './social';
+import { columnsConfig } from './columns';
 
 console.log('Available component configs:', {
-  text: textComponentConfig,
-  button: buttonComponentConfig,
-  image: imageComponentConfig,
-  divider: dividerComponentConfig
+  text: textConfig,
+  button: buttonConfig,
+  image: imageConfig,
+  divider: dividerConfig,
+  spacer: spacerConfig,
+  social: socialConfig,
+  columns: columnsConfig
 });
 
 // Export all component configs
 export const componentConfigs = {
-  text: textComponentConfig,
-  button: buttonComponentConfig,
-  image: imageComponentConfig,
-  divider: dividerComponentConfig
-};
+  text: textConfig,
+  button: buttonConfig,
+  image: imageConfig,
+  divider: dividerConfig,
+  spacer: spacerConfig,
+  social: socialConfig,
+  columns: columnsConfig,
+} as const;
 
 // Register all components
-Object.values(componentConfigs).forEach(config => {
-  console.log('Registering component:', config.type);
-  componentRegistry.registerComponent(config);
-});
+export const registerComponents = () => {
+  Object.values(componentConfigs).forEach(config => {
+    componentRegistry.registerComponent(config);
+  });
+};
 
 console.log('Registered components:', componentRegistry.getAllComponents());
 

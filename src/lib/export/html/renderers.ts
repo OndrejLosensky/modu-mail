@@ -11,7 +11,7 @@ const styleObjectToString = (styles: Record<string, string | number>): string =>
     .join(' ');
 };
 
-export const renderBlock = (block: Block): string => {
+export const renderBlock = (block: Block<Record<string, unknown>>): string => {
   const config = blockConfigs[block.type];
   if (!config) {
     console.warn(`No renderer found for block type: ${block.type}`);
@@ -19,7 +19,7 @@ export const renderBlock = (block: Block): string => {
   }
 
   const { tag, styleGenerator, attributeGenerator, innerContentGenerator } = config;
-  const styles = styleGenerator(block);
+  const styles = styleGenerator?.(block) || {};
   const attributes = attributeGenerator?.(block) || {};
 
   // Build HTML attributes string
