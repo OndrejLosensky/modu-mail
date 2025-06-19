@@ -22,12 +22,10 @@ export const ButtonBlock: React.FC<BlockComponentProps> = ({
   return (
     <div
       className={`
-        p-4
+        p-4 flex
         ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''}
+        ${align === 'center' ? 'justify-center' : align === 'right' ? 'justify-end' : 'justify-start'}
       `}
-      style={{
-        textAlign: align
-      }}
     >
       <a
         href={href}

@@ -1,6 +1,6 @@
 import { ComponentCategory } from '@/lib/components/configs/ComponentCategories';
 
-export type BlockType = 'text' | 'image' | 'button' | 'divider' | 'container';
+export type BlockType = 'text' | 'image' | 'button' | 'divider' | 'container' | 'list';
 
 export type TextAlignment = 'left' | 'center' | 'right' | 'justify';
 export type BorderStyle = 'solid' | 'dashed' | 'dotted';
@@ -55,12 +55,23 @@ export interface ContainerBlockProps extends CommonBlockProps {
   align?: TextAlignment;
 }
 
+export interface ListBlockProps extends CommonBlockProps {
+  items: string[];
+  listType: 'ordered' | 'unordered';
+  fontSize?: string;
+  color?: string;
+  textAlign?: TextAlignment;
+  bulletColor?: string;
+  spacing?: string;
+}
+
 export type BlockProps = 
   | TextBlockProps 
   | ButtonBlockProps 
   | ImageBlockProps 
   | DividerBlockProps 
-  | ContainerBlockProps;
+  | ContainerBlockProps
+  | ListBlockProps;
 
 export interface Block {
   id: string;

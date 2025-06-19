@@ -6,6 +6,7 @@ import { Container, containerConfig } from './layout/container';
 // Import content blocks
 import { TextBlock, textConfig } from './content/text';
 import { DividerBlock, dividerConfig } from './content/divider';
+import { ListBlock, listConfig } from './content/list';
 
 // Import interactive blocks
 import { ButtonBlock, buttonConfig } from './interactive/button';
@@ -29,6 +30,7 @@ export function initializeBlocks() {
     // Register content blocks
     blockManager.registerBlock('text', TextBlock, textConfig);
     blockManager.registerBlock('divider', DividerBlock, dividerConfig);
+    blockManager.registerBlock('list', ListBlock, listConfig);
 
     // Register interactive blocks
     blockManager.registerBlock('button', ButtonBlock, buttonConfig);

@@ -19,9 +19,9 @@ export const DragOverlay: React.FC<DragOverlayProps> = ({
   if (!draggedBlock && !draggedComponent) return null;
 
   return (
-    <DndDragOverlay>
+    <DndDragOverlay dropAnimation={null}>
       {draggedBlock ? (
-        <div className="w-[calc(100%-2.5rem)] opacity-75">
+        <div className="w-[calc(100%-2.5rem)] opacity-50">
           <BlockRenderer
             block={draggedBlock}
             isSelected={false}
@@ -30,9 +30,15 @@ export const DragOverlay: React.FC<DragOverlayProps> = ({
           />
         </div>
       ) : draggedComponent ? (
-        <div className="p-4 bg-white rounded-lg shadow-lg border-2 border-blue-500 flex items-center gap-2">
-          <span className="text-2xl">{draggedComponent.icon}</span>
-          <span className="text-sm font-medium">{draggedComponent.label}</span>
+        <div className="w-64 p-3 border rounded-lg bg-white shadow-md">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-8 h-8 rounded bg-gray-50 text-lg text-gray-700">
+              {draggedComponent.icon}
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm text-gray-900 font-medium">{draggedComponent.label}</span>
+            </div>
+          </div>
         </div>
       ) : null}
     </DndDragOverlay>

@@ -24,6 +24,7 @@ export default function Home() {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [activeBlock, setActiveBlock] = useState<Block | null>(null);
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
+  const [draggedComponent, setDraggedComponent] = useState<{ type: string; icon: string; label: string; } | null>(null);
   const [isClient, setIsClient] = useState(false);
 
   const mouseSensor = useSensor(MouseSensor);
@@ -81,12 +82,18 @@ export default function Home() {
   const handleDragStart = (event: DragStartEvent) => {
     const type = event.active.data.current?.type as BlockType;
     if (type) {
-      const newBlock: Block = {
-        id: `${type}-${Date.now()}`,
-        type,
-        props: getDefaultProps(type)
-      };
-      setActiveBlock(newBlock);
+      // Only set the draggedComponent info, don't create a block yet
+      const componentInfo = {
+        text: { icon: 'T', label: 'Text Block' },
+        image: { icon: '🖼', label: 'Image' },
+        button: { icon: '↗', label: 'Button' },
+        divider: { icon: '—', label: 'Divider' },
+        list: { icon: '•', label: 'List' }
+      }[type as 'text' | 'image' | 'button' | 'divider' | 'list'];
+      
+      if (componentInfo) {
+        setDraggedComponent({ type, ...componentInfo });
+      }
     } else {
       const activeBlock = blocks.find(block => block.id === event.active.id);
       if (activeBlock) {
@@ -114,9 +121,9 @@ export default function Home() {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    setActiveBlock(null);
-
     const { active, over } = event;
+    
+    // Create the new block only when dropping
     if (over && active.data.current?.type) {
       const type = active.data.current.type as BlockType;
       const newBlock: Block = {
@@ -127,6 +134,9 @@ export default function Home() {
       setBlocks((prev) => [...prev, newBlock]);
       setSelectedBlock(newBlock);
     }
+    
+    setActiveBlock(null);
+    setDraggedComponent(null);
   };
 
   const handleBlockUpdate = (updatedBlock: Block) => {
@@ -174,7 +184,10 @@ export default function Home() {
           onUpdateBlock={handleBlockUpdate}
         />
       </EditorLayout>
-      <DragOverlay draggedBlock={activeBlock || undefined} />
+      <DragOverlay 
+        draggedBlock={activeBlock || undefined} 
+        draggedComponent={draggedComponent || undefined}
+      />
     </DndContext>
   );
 }

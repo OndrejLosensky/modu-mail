@@ -66,6 +66,12 @@ export const ComponentsSidebar = () => {
             description="Add a paragraph or heading"
           />
           <DraggableBlock
+            type="list"
+            icon="•"
+            label="List"
+            description="Add a bulleted or numbered list"
+          />
+          <DraggableBlock
             type="image"
             icon="🖼"
             label="Image"
