@@ -26,7 +26,7 @@ export interface ButtonBlockProps extends CommonBlockProps {
   fontSize?: string;
   padding?: string;
   borderRadius?: string;
-  align?: TextAlignment;
+  textAlign?: TextAlignment;
   border?: string;
 }
 

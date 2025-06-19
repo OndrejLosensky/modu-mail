@@ -1,6 +1,5 @@
 import { Block } from '@/types/blocks';
-import { BlockHTMLConfig } from './types';
-import { textBlockStyles, buttonBlockStyles, imageBlockStyles, dividerBlockStyles } from './styles';
+import { blockConfigs } from '@/config/blocks/renderers';
 
 const styleObjectToString = (styles: Record<string, string | number>): string => {
   return Object.entries(styles)
@@ -10,36 +9,6 @@ const styleObjectToString = (styles: Record<string, string | number>): string =>
       return `${cssKey}: ${value};`;
     })
     .join(' ');
-};
-
-const blockConfigs: Record<string, BlockHTMLConfig> = {
-  text: {
-    tag: 'p',
-    styleGenerator: textBlockStyles,
-    innerContentGenerator: (block: Block) => block.props.text || '',
-  },
-  button: {
-    tag: 'a',
-    styleGenerator: buttonBlockStyles,
-    attributeGenerator: (block: Block) => ({
-      href: block.props.href || '#',
-      target: '_blank',
-      rel: 'noopener noreferrer',
-    }),
-    innerContentGenerator: (block: Block) => block.props.text || 'Click here',
-  },
-  image: {
-    tag: 'img',
-    styleGenerator: imageBlockStyles,
-    attributeGenerator: (block: Block) => ({
-      src: block.props.src || '',
-      alt: block.props.alt || '',
-    }),
-  },
-  divider: {
-    tag: 'hr',
-    styleGenerator: dividerBlockStyles,
-  },
 };
 
 export const renderBlock = (block: Block): string => {

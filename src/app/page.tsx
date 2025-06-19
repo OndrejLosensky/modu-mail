@@ -19,6 +19,7 @@ import { EditorLayout } from '@/components/layout/EditorLayout';
 import { PropertiesPanel } from '@/components/properties/PropertiesPanel';
 import { Block, BlockType } from '@/types/blocks';
 import { initializeBlocks } from '@/blocks/init';
+import { components } from '@/config/components';
 
 export default function Home() {
   const [blocks, setBlocks] = useState<Block[]>([]);
@@ -37,62 +38,20 @@ export default function Home() {
   }, []);
 
   const getDefaultProps = (type: BlockType) => {
-    switch (type) {
-      case 'text':
-        return {
-          text: 'New text block',
-          fontSize: '16px',
-          color: '#1f2937',
-          textAlign: 'left'
-        };
-      case 'image':
-        return {
-          src: 'https://via.placeholder.com/600x400',
-          alt: 'Image description',
-          width: '100%',
-          height: 'auto'
-        };
-      case 'button':
-        return {
-          text: 'Click me',
-          href: '#',
-          fontSize: '16px',
-          color: '#ffffff',
-          backgroundColor: '#3b82f6',
-          align: 'left'
-        };
-      case 'divider':
-        return {
-          color: '#e5e7eb',
-          height: '1px',
-          borderStyle: 'solid'
-        };
-      case 'container':
-        return {
-          maxWidth: '600px',
-          padding: '20px',
-          backgroundColor: '#ffffff',
-          align: 'center'
-        };
-      default:
-        return {};
-    }
+    const component = components.find(c => c.type === type);
+    return component ? component.defaultProps : {};
   };
 
   const handleDragStart = (event: DragStartEvent) => {
     const type = event.active.data.current?.type as BlockType;
     if (type) {
-      // Only set the draggedComponent info, don't create a block yet
-      const componentInfo = {
-        text: { icon: 'T', label: 'Text Block' },
-        image: { icon: '🖼', label: 'Image' },
-        button: { icon: '↗', label: 'Button' },
-        divider: { icon: '—', label: 'Divider' },
-        list: { icon: '•', label: 'List' }
-      }[type as 'text' | 'image' | 'button' | 'divider' | 'list'];
-      
-      if (componentInfo) {
-        setDraggedComponent({ type, ...componentInfo });
+      const component = components.find(c => c.type === type);
+      if (component) {
+        setDraggedComponent({
+          type: component.type,
+          icon: component.icon,
+          label: component.label
+        });
       }
     } else {
       const activeBlock = blocks.find(block => block.id === event.active.id);

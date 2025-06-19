@@ -10,7 +10,26 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   selectedBlock,
   onUpdateBlock = () => {}
 }) => {
-  if (!selectedBlock) return null;
+  const renderEmptyState = () => (
+    <div className="w-72 border-l bg-white overflow-y-auto">
+      <div className="p-4 border-b bg-gray-50">
+        <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Properties</h2>
+      </div>
+      <div className="p-8 flex flex-col items-center justify-center text-center">
+        <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+          <svg className="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        </div>
+        <h3 className="text-sm font-medium text-gray-900 mb-1">No Block Selected</h3>
+        <p className="text-sm text-gray-500">Select a block from the canvas or drag a new component to get started.</p>
+      </div>
+    </div>
+  );
+
+  if (!selectedBlock) {
+    return renderEmptyState();
+  }
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (selectedBlock.type === 'text' || selectedBlock.type === 'button') {
@@ -50,26 +69,148 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
 
   return (
     <div className="w-72 border-l bg-white overflow-y-auto">
-      <div className="p-4 border-b">
-        <h2 className="text-sm font-semibold text-gray-900 uppercase">
+      <div className="p-4 border-b bg-gray-50">
+        <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">
           {selectedBlock.type.toUpperCase()}
         </h2>
       </div>
 
       <div className="p-4 space-y-4">
         {selectedBlock.type === 'text' && (
-          <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-gray-700">
-              Text Content
-            </label>
-            <textarea
-              value={(selectedBlock.props as TextBlockProps).text || ''}
-              onChange={handleTextChange}
-              rows={3}
-              className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
-              placeholder="Enter text..."
-            />
-          </div>
+          <>
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-700">
+                Text Content
+              </label>
+              <textarea
+                value={(selectedBlock.props as TextBlockProps).text || ''}
+                onChange={handleTextChange}
+                rows={3}
+                className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                placeholder="Enter text..."
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-700">
+                Font Size
+              </label>
+              <div className="flex items-center gap-1">
+                <input
+                  type="text"
+                  value={(selectedBlock.props as TextBlockProps).fontSize?.replace('px', '') || '16'}
+                  onChange={(e) => onUpdateBlock({
+                    ...selectedBlock,
+                    props: {
+                      ...selectedBlock.props,
+                      fontSize: `${e.target.value}px`
+                    }
+                  })}
+                  className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                />
+                <span className="text-xs text-gray-500">px</span>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-700">
+                Text Color
+              </label>
+              <div className="flex items-center gap-1.5">
+                <div className="relative">
+                  <input
+                    type="color"
+                    value={(selectedBlock.props as TextBlockProps).color || '#1f2937'}
+                    onChange={(e) => onUpdateBlock({
+                      ...selectedBlock,
+                      props: {
+                        ...selectedBlock.props,
+                        color: e.target.value
+                      }
+                    })}
+                    className="sr-only"
+                    id="text-color-picker"
+                  />
+                  <label 
+                    htmlFor="text-color-picker"
+                    className="block w-7 h-7 rounded-md border border-gray-200 cursor-pointer overflow-hidden shadow-sm"
+                    style={{ 
+                      backgroundColor: (selectedBlock.props as TextBlockProps).color || '#1f2937',
+                      borderColor: (selectedBlock.props as TextBlockProps).color === '#ffffff' ? '#e5e7eb' : 'transparent'
+                    }}
+                  />
+                </div>
+                <input
+                  type="text"
+                  value={(selectedBlock.props as TextBlockProps).color || '#1f2937'}
+                  onChange={(e) => onUpdateBlock({
+                    ...selectedBlock,
+                    props: {
+                      ...selectedBlock.props,
+                      color: e.target.value
+                    }
+                  })}
+                  className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm text-gray-900 uppercase placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-700">
+                Alignment
+              </label>
+              <div className="flex p-0.5 bg-white rounded-md shadow-sm">
+                <button
+                  onClick={() => onUpdateBlock({
+                    ...selectedBlock,
+                    props: {
+                      ...selectedBlock.props,
+                      textAlign: 'left'
+                    }
+                  })}
+                  className={`flex-1 p-1.5 rounded ${
+                    (selectedBlock.props as TextBlockProps).textAlign === 'left' ? 'bg-gray-100 text-blue-600' : 'text-gray-500 hover:text-gray-900'
+                  }`}
+                >
+                  <svg className="w-4 h-4 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h10M4 18h12" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => onUpdateBlock({
+                    ...selectedBlock,
+                    props: {
+                      ...selectedBlock.props,
+                      textAlign: 'center'
+                    }
+                  })}
+                  className={`flex-1 p-1.5 rounded ${
+                    (selectedBlock.props as TextBlockProps).textAlign === 'center' ? 'bg-gray-100 text-blue-600' : 'text-gray-500 hover:text-gray-900'
+                  }`}
+                >
+                  <svg className="w-4 h-4 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M7 12h10M6 18h12" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => onUpdateBlock({
+                    ...selectedBlock,
+                    props: {
+                      ...selectedBlock.props,
+                      textAlign: 'right'
+                    }
+                  })}
+                  className={`flex-1 p-1.5 rounded ${
+                    (selectedBlock.props as TextBlockProps).textAlign === 'right' ? 'bg-gray-100 text-blue-600' : 'text-gray-500 hover:text-gray-900'
+                  }`}
+                >
+                  <svg className="w-4 h-4 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M10 12h10M8 18h12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </>
         )}
 
         {selectedBlock.type === 'list' && (
@@ -339,6 +480,203 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
                 placeholder="https://example.com"
               />
             </div>
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-700">
+                Font Size
+              </label>
+              <div className="flex items-center gap-1">
+                <input
+                  type="text"
+                  value={(selectedBlock.props as ButtonBlockProps).fontSize?.replace('px', '') || '16'}
+                  onChange={(e) => onUpdateBlock({
+                    ...selectedBlock,
+                    props: {
+                      ...selectedBlock.props,
+                      fontSize: `${e.target.value}px`
+                    }
+                  })}
+                  className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                />
+                <span className="text-xs text-gray-500">px</span>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-700">
+                Text Color
+              </label>
+              <div className="flex items-center gap-1.5">
+                <div className="relative">
+                  <input
+                    type="color"
+                    value={(selectedBlock.props as ButtonBlockProps).color || '#ffffff'}
+                    onChange={(e) => onUpdateBlock({
+                      ...selectedBlock,
+                      props: {
+                        ...selectedBlock.props,
+                        color: e.target.value
+                      }
+                    })}
+                    className="sr-only"
+                    id="button-text-color-picker"
+                  />
+                  <label 
+                    htmlFor="button-text-color-picker"
+                    className="block w-7 h-7 rounded-md border border-gray-200 cursor-pointer overflow-hidden shadow-sm"
+                    style={{ 
+                      backgroundColor: (selectedBlock.props as ButtonBlockProps).color || '#ffffff',
+                      borderColor: (selectedBlock.props as ButtonBlockProps).color === '#ffffff' ? '#e5e7eb' : 'transparent'
+                    }}
+                  />
+                </div>
+                <input
+                  type="text"
+                  value={(selectedBlock.props as ButtonBlockProps).color || '#ffffff'}
+                  onChange={(e) => onUpdateBlock({
+                    ...selectedBlock,
+                    props: {
+                      ...selectedBlock.props,
+                      color: e.target.value
+                    }
+                  })}
+                  className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm text-gray-900 uppercase placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-700">
+                Background Color
+              </label>
+              <div className="flex items-center gap-1.5">
+                <div className="relative">
+                  <input
+                    type="color"
+                    value={(selectedBlock.props as ButtonBlockProps).backgroundColor || '#3b82f6'}
+                    onChange={(e) => onUpdateBlock({
+                      ...selectedBlock,
+                      props: {
+                        ...selectedBlock.props,
+                        backgroundColor: e.target.value
+                      }
+                    })}
+                    className="sr-only"
+                    id="button-bg-color-picker"
+                  />
+                  <label 
+                    htmlFor="button-bg-color-picker"
+                    className="block w-7 h-7 rounded-md border border-gray-200 cursor-pointer overflow-hidden shadow-sm"
+                    style={{ 
+                      backgroundColor: (selectedBlock.props as ButtonBlockProps).backgroundColor || '#3b82f6',
+                      borderColor: (selectedBlock.props as ButtonBlockProps).backgroundColor === '#ffffff' ? '#e5e7eb' : 'transparent'
+                    }}
+                  />
+                </div>
+                <input
+                  type="text"
+                  value={(selectedBlock.props as ButtonBlockProps).backgroundColor || '#3b82f6'}
+                  onChange={(e) => onUpdateBlock({
+                    ...selectedBlock,
+                    props: {
+                      ...selectedBlock.props,
+                      backgroundColor: e.target.value
+                    }
+                  })}
+                  className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm text-gray-900 uppercase placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-700">
+                Border Radius
+              </label>
+              <div className="flex items-center gap-1">
+                <input
+                  type="text"
+                  value={(selectedBlock.props as ButtonBlockProps).borderRadius?.replace('px', '') || '6'}
+                  onChange={(e) => onUpdateBlock({
+                    ...selectedBlock,
+                    props: {
+                      ...selectedBlock.props,
+                      borderRadius: `${e.target.value}px`
+                    }
+                  })}
+                  className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                />
+                <span className="text-xs text-gray-500">px</span>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-700">
+                Padding
+              </label>
+              <input
+                type="text"
+                value={(selectedBlock.props as ButtonBlockProps).padding || '10px 20px'}
+                onChange={(e) => onUpdateBlock({
+                  ...selectedBlock,
+                  props: {
+                    ...selectedBlock.props,
+                    padding: e.target.value
+                  }
+                })}
+                className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                placeholder="10px 20px"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-700">
+                Alignment
+              </label>
+              <div className="flex p-0.5 bg-white rounded-md shadow-sm">
+                <button
+                  onClick={() => onUpdateBlock({
+                    ...selectedBlock,
+                    props: {
+                      ...selectedBlock.props,
+                      textAlign: 'left'
+                    }
+                  })}
+                  className={`flex-1 p-1.5 rounded ${
+                    (selectedBlock.props as ButtonBlockProps).textAlign === 'left' ? 'bg-gray-100 text-blue-600' : 'text-gray-500 hover:text-gray-900'
+                  }`}
+                >
+                  <svg className="w-4 h-4 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h10M4 18h12" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => onUpdateBlock({
+                    ...selectedBlock,
+                    props: {
+                      ...selectedBlock.props,
+                      textAlign: 'center'
+                    }
+                  })}
+                  className={`flex-1 p-1.5 rounded ${
+                    (selectedBlock.props as ButtonBlockProps).textAlign === 'center' ? 'bg-gray-100 text-blue-600' : 'text-gray-500 hover:text-gray-900'
+                  }`}
+                >
+                  <svg className="w-4 h-4 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M7 12h10M6 18h12" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => onUpdateBlock({
+                    ...selectedBlock,
+                    props: {
+                      ...selectedBlock.props,
+                      textAlign: 'right'
+                    }
+                  })}
+                  className={`flex-1 p-1.5 rounded ${
+                    (selectedBlock.props as ButtonBlockProps).textAlign === 'right' ? 'bg-gray-100 text-blue-600' : 'text-gray-500 hover:text-gray-900'
+                  }`}
+                >
+                  <svg className="w-4 h-4 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M10 12h10M8 18h12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </>
         )}
 
@@ -406,6 +744,25 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
                   className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm text-gray-900 uppercase placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
                 />
               </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-xs font-medium text-gray-700">
+                Margin
+              </label>
+              <input
+                type="text"
+                value={(selectedBlock.props as DividerBlockProps).margin || '10px 0'}
+                onChange={(e) => onUpdateBlock({
+                  ...selectedBlock,
+                  props: {
+                    ...selectedBlock.props,
+                    margin: e.target.value
+                  }
+                })}
+                className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+                placeholder="10px 0"
+              />
             </div>
           </>
         )}
