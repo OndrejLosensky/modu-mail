@@ -20,13 +20,15 @@ import { PropertiesPanel } from '@/components/properties/PropertiesPanel';
 import { Block, BlockType } from '@/types/blocks';
 import { initializeBlocks } from '@/blocks/init';
 import { components } from '@/config/components';
+import { useBlocksStore } from '@/lib/store/blocks';
 
 export default function Home() {
-  const [blocks, setBlocks] = useState<Block[]>([]);
   const [activeBlock, setActiveBlock] = useState<Block | null>(null);
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
   const [draggedComponent, setDraggedComponent] = useState<{ type: string; icon: string; label: string; } | null>(null);
   const [isClient, setIsClient] = useState(false);
+
+  const { blocks, setBlocks } = useBlocksStore();
 
   const mouseSensor = useSensor(MouseSensor);
   const touchSensor = useSensor(TouchSensor);
@@ -75,7 +77,7 @@ export default function Home() {
     const overIndex = blocks.findIndex(block => block.id === overId);
 
     if (activeIndex !== -1 && overIndex !== -1) {
-      setBlocks(blocks => arrayMove(blocks, activeIndex, overIndex));
+      setBlocks(arrayMove(blocks, activeIndex, overIndex));
     }
   };
 
@@ -90,7 +92,7 @@ export default function Home() {
         type,
         props: getDefaultProps(type)
       };
-      setBlocks((prev) => [...prev, newBlock]);
+      setBlocks([...blocks, newBlock]);
       setSelectedBlock(newBlock);
     }
     
@@ -99,8 +101,8 @@ export default function Home() {
   };
 
   const handleBlockUpdate = (updatedBlock: Block) => {
-    setBlocks((prev) =>
-      prev.map((block) =>
+    setBlocks(
+      blocks.map((block) =>
         block.id === updatedBlock.id ? updatedBlock : block
       )
     );
@@ -130,18 +132,20 @@ export default function Home() {
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
-      <EditorLayout blocks={blocks}>
-        <ComponentsSidebar />
-        <EmailCanvas
-          blocks={blocks}
-          onSelectBlock={handleSelectBlock}
-          selectedBlock={selectedBlock}
-          onUpdateBlock={handleBlockUpdate}
-        />
-        <PropertiesPanel 
-          selectedBlock={selectedBlock} 
-          onUpdateBlock={handleBlockUpdate}
-        />
+      <EditorLayout>
+        <div className="flex h-full">
+          <ComponentsSidebar />
+          <EmailCanvas
+            blocks={blocks}
+            onSelectBlock={handleSelectBlock}
+            selectedBlock={selectedBlock}
+            onUpdateBlock={handleBlockUpdate}
+          />
+          <PropertiesPanel 
+            selectedBlock={selectedBlock} 
+            onUpdateBlock={handleBlockUpdate}
+          />
+        </div>
       </EditorLayout>
       <DragOverlay 
         draggedBlock={activeBlock || undefined} 

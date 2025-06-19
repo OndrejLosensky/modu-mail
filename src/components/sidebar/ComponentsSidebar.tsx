@@ -20,7 +20,7 @@ export const ComponentsSidebar: React.FC = () => {
   }, {} as Record<string, typeof components>);
 
   return (
-    <div className="w-72 border-r bg-white overflow-y-auto">
+    <div className="w-72 border-r bg-white h-full overflow-y-auto">
       <div className="p-4 border-b">
         <h2 className="text-sm font-semibold text-gray-900 uppercase">Components</h2>
       </div>
@@ -72,7 +72,7 @@ const DraggableComponent: React.FC<DraggableComponentProps> = ({ type, icon, lab
       {...listeners}
       {...attributes}
       className={`
-        flex items-start gap-3 p-3 border rounded-lg cursor-move transition-all
+        group flex items-start gap-3 p-3 border rounded-lg cursor-grab active:cursor-grabbing transition-all
         ${isDragging ? 'opacity-50 scale-105 border-blue-200 bg-blue-50' : 'hover:bg-gray-50 hover:border-gray-300'}
         bg-white border-gray-200
       `}
@@ -80,9 +80,14 @@ const DraggableComponent: React.FC<DraggableComponentProps> = ({ type, icon, lab
       <div className="flex items-center justify-center w-10 h-10 rounded-md bg-gray-50 text-lg text-gray-700 shrink-0">
         {icon}
       </div>
-      <div className="flex flex-col min-w-0">
+      <div className="flex flex-col min-w-0 flex-1">
         <span className="text-sm font-medium text-gray-900">{label}</span>
         <span className="text-xs text-gray-500 truncate">{description}</span>
+      </div>
+      <div className="flex items-center self-center opacity-0 group-hover:opacity-100 transition-opacity">
+        <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5v14m6-14v14M4 9h16M4 15h16" />
+        </svg>
       </div>
     </div>
   );

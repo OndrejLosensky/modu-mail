@@ -11,7 +11,6 @@ interface EmailCanvasProps {
   selectedBlock: Block | null;
   isDragging?: boolean;
   onUpdateBlock: (block: Block) => void;
-  onReorderBlocks?: (blocks: Block[]) => void;
 }
 
 export const EmailCanvas: React.FC<EmailCanvasProps> = ({ 
@@ -20,14 +19,13 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
   selectedBlock,
   isDragging = false,
   onUpdateBlock,
-  onReorderBlocks
 }) => {
   const { setNodeRef, isOver } = useDroppable({
     id: 'email-canvas',
   });
 
   return (
-    <div className="flex-1 bg-gray-100 p-8 overflow-auto">
+    <div className="flex-1 bg-gray-100 p-8 h-full overflow-auto">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-xl font-semibold text-gray-900">Email Canvas</h1>
@@ -71,12 +69,9 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
                 </div>
               ) : (
                 <SortableContext items={blocks.map(b => b.id)} strategy={verticalListSortingStrategy}>
-                  <div className="space-y-1">
+                  <div className="space-y-4">
                     {blocks.map((block) => (
-                      <SortableBlockWrapper
-                        key={block.id}
-                        id={block.id}
-                      >
+                      <SortableBlockWrapper key={block.id} id={block.id}>
                         <BlockRenderer
                           block={block}
                           isSelected={selectedBlock?.id === block.id}

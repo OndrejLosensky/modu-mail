@@ -11,7 +11,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   onUpdateBlock = () => {}
 }) => {
   const renderEmptyState = () => (
-    <div className="w-72 border-l bg-white overflow-y-auto">
+    <div className="w-72 border-l bg-white h-full overflow-y-auto">
       <div className="p-4 border-b bg-gray-50">
         <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Properties</h2>
       </div>

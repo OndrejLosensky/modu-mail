@@ -27,7 +27,10 @@ export const SortableBlockWrapper: React.FC<SortableBlockWrapperProps> = ({ id, 
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
       <div className="group relative">
-        <div className="absolute -left-10 top-1/2 -translate-y-1/2 flex items-center justify-center w-6 h-6 rounded border bg-white text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing" {...listeners}>
+        <div 
+          className="absolute -left-10 top-1/2 -translate-y-1/2 flex items-center justify-center w-6 h-6 rounded border bg-white text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing" 
+          {...listeners}
+        >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M9 13C9.55228 13 10 12.5523 10 12C10 11.4477 9.55228 11 9 11C8.44772 11 8 11.4477 8 12C8 12.5523 8.44772 13 9 13Z" fill="currentColor" />
             <path d="M9 17C9.55228 17 10 16.5523 10 16C10 15.4477 9.55228 15 9 15C8.44772 15 8 15.4477 8 16C8 16.5523 8.44772 17 9 17Z" fill="currentColor" />
