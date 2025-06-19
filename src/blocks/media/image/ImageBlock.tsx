@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BlockComponentProps, ImageBlockProps } from '@/types/blocks';
+import { BlockComponentProps, ImageBlockProps, TextAlignment, ObjectFit } from '@/types/blocks';
 
 export const ImageBlock: React.FC<BlockComponentProps> = ({ 
   block,
@@ -68,7 +68,7 @@ export const ImageBlock: React.FC<BlockComponentProps> = ({
     return (
       <div
         style={{
-          textAlign: align,
+          textAlign: align as TextAlignment,
           position: 'relative',
           padding: '16px',
           backgroundColor: '#f3f4f6',
@@ -95,7 +95,7 @@ export const ImageBlock: React.FC<BlockComponentProps> = ({
   return (
     <div
       style={{
-        textAlign: align,
+        textAlign: align as TextAlignment,
         position: 'relative',
       }}
       className={`
@@ -110,8 +110,8 @@ export const ImageBlock: React.FC<BlockComponentProps> = ({
         style={{
           width,
           height,
-          objectFit,
-          borderRadius,
+          objectFit: objectFit as ObjectFit,
+          borderRadius: borderRadius as string,
           display: 'inline-block',
           maxWidth: '100%',
         }}

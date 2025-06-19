@@ -4,7 +4,7 @@ import { ComponentCategory } from '@/lib/components/configs/ComponentCategories'
 export const dividerConfig: BaseComponentConfig = {
   id: 'divider',
   type: 'divider',
-  category: ComponentCategory.CONTENT,
+  category: ComponentCategory.Content,
   label: 'Divider',
   description: 'A horizontal line to separate content',
   defaultProps: {

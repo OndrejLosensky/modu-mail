@@ -4,7 +4,7 @@ import { ComponentCategory } from '@/lib/components/configs/ComponentCategories'
 export const listConfig: BaseComponentConfig = {
   id: 'list',
   type: 'list',
-  category: ComponentCategory.CONTENT,
+  category: ComponentCategory.Content,
   label: 'List',
   description: 'Add a bulleted or numbered list',
   defaultProps: {

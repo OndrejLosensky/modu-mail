@@ -4,7 +4,7 @@ import { ComponentCategory } from '@/lib/components/configs/ComponentCategories'
 export const containerConfig: BaseComponentConfig = {
   id: 'container',
   type: 'container',
-  category: ComponentCategory.LAYOUT,
+  category: ComponentCategory.Layout,
   label: 'Container',
   description: 'A container block to wrap other content',
   defaultProps: {

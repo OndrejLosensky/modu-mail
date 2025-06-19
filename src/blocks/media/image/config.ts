@@ -4,7 +4,7 @@ import { ComponentCategory } from '@/lib/components/configs/ComponentCategories'
 export const imageConfig: BaseComponentConfig = {
   id: 'image',
   type: 'image',
-  category: ComponentCategory.MEDIA,
+  category: ComponentCategory.Media,
   label: 'Image',
   description: 'An image block with customizable properties',
   defaultProps: {

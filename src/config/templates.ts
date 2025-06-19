@@ -138,5 +138,173 @@ export const templates: Template[] = [
         }
       }
     ]
+  },
+  {
+    id: 'modern-promo',
+    name: 'Modern Promotion',
+    description: 'A sleek and engaging promotional template with modern design elements',
+    category: 'marketing',
+    blocks: [
+      {
+        id: 'hero-container',
+        type: 'container',
+        props: {
+          backgroundColor: '#f8fafc',
+          padding: '40px 20px'
+        }
+      },
+      {
+        id: 'logo-text',
+        type: 'text',
+        props: {
+          text: '🚀 SuperApp',
+          fontSize: '32px',
+          color: '#0f172a',
+          textAlign: 'center',
+          lineHeight: '1.2'
+        }
+      },
+      {
+        id: 'hero-spacer',
+        type: 'spacer',
+        props: {
+          height: '30px'
+        }
+      },
+      {
+        id: 'hero-image',
+        type: 'image',
+        props: {
+          src: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800',
+          alt: 'Modern workspace with laptop',
+          width: '100%',
+          height: 'auto',
+          borderRadius: '16px'
+        }
+      },
+      {
+        id: 'image-spacer',
+        type: 'spacer',
+        props: {
+          height: '40px'
+        }
+      },
+      {
+        id: 'headline',
+        type: 'text',
+        props: {
+          text: 'Transform Your Workflow Today',
+          fontSize: '36px',
+          color: '#1e293b',
+          textAlign: 'center',
+          lineHeight: '1.2'
+        }
+      },
+      {
+        id: 'subheadline',
+        type: 'text',
+        props: {
+          text: 'Experience the future of productivity with our latest features',
+          fontSize: '18px',
+          color: '#64748b',
+          textAlign: 'center',
+          lineHeight: '1.5'
+        }
+      },
+      {
+        id: 'text-spacer',
+        type: 'spacer',
+        props: {
+          height: '30px'
+        }
+      },
+      {
+        id: 'features-list',
+        type: 'list',
+        props: {
+          items: [
+            '🎯 Smart task automation',
+            '🔄 Real-time collaboration',
+            '📊 Advanced analytics dashboard',
+            '🛡️ Enterprise-grade security'
+          ],
+          listType: 'unordered',
+          fontSize: '16px',
+          color: '#334155',
+          bulletColor: '#3b82f6',
+          spacing: '1em',
+          textAlign: 'center'
+        }
+      },
+      {
+        id: 'list-spacer',
+        type: 'spacer',
+        props: {
+          height: '40px'
+        }
+      },
+      {
+        id: 'cta-button',
+        type: 'button',
+        props: {
+          text: 'Get Started Free',
+          href: '#',
+          fontSize: '18px',
+          color: '#ffffff',
+          backgroundColor: '#3b82f6',
+          padding: '16px 32px',
+          borderRadius: '8px',
+          align: 'center'
+        }
+      },
+      {
+        id: 'button-spacer',
+        type: 'spacer',
+        props: {
+          height: '40px'
+        }
+      },
+      {
+        id: 'divider',
+        type: 'divider',
+        props: {
+          color: '#e2e8f0',
+          height: '2px',
+          width: '80%'
+        }
+      },
+      {
+        id: 'footer-spacer',
+        type: 'spacer',
+        props: {
+          height: '30px'
+        }
+      },
+      {
+        id: 'social-links',
+        type: 'social',
+        props: {
+          networks: [
+            { platform: 'twitter', url: 'https://twitter.com' },
+            { platform: 'linkedin', url: 'https://linkedin.com' },
+            { platform: 'instagram', url: 'https://instagram.com' }
+          ],
+          iconSize: '24px',
+          spacing: '20px',
+          alignment: 'center'
+        }
+      },
+      {
+        id: 'footer-text',
+        type: 'text',
+        props: {
+          text: '© 2024 SuperApp. All rights reserved.',
+          fontSize: '14px',
+          color: '#94a3b8',
+          textAlign: 'center',
+          lineHeight: '1.5'
+        }
+      }
+    ]
   }
 ]; 

@@ -27,7 +27,7 @@ export const DividerBlock: React.FC<BlockComponentProps> = ({
           border: 'none',
           height,
           background: color,
-          width,
+          width: width as string,
           borderTop: `${height} ${borderStyle} ${color}`,
         }}
       />

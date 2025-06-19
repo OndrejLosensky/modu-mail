@@ -1,4 +1,4 @@
-export type BlockType = 'text' | 'button' | 'image' | 'divider' | 'spacer' | 'social' | 'columns' | 'list';
+export type BlockType = 'text' | 'button' | 'image' | 'divider' | 'spacer' | 'social' | 'columns' | 'list' | 'container';
 
 export type TextAlignment = 'left' | 'center' | 'right' | 'justify';
 export type ListType = 'ordered' | 'unordered';

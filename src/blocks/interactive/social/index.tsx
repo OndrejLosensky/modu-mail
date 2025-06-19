@@ -1,12 +1,7 @@
 import React from 'react';
-import { Block, SocialBlockProps as ISocialBlockProps } from '@/types/blocks';
+import { BlockComponentProps, SocialBlockProps as ISocialBlockProps } from '@/types/blocks';
 import { BaseComponentConfig } from '@/lib/components/configs/BaseComponentConfig';
 import { ComponentCategory } from '@/lib/components/configs/ComponentCategories';
-
-interface SocialComponentProps {
-  block: Block & { props: ISocialBlockProps };
-  isSelected?: boolean;
-}
 
 const socialIcons = {
   facebook: '📘',
@@ -16,17 +11,18 @@ const socialIcons = {
   youtube: '🎥',
 };
 
-export const SocialBlock: React.FC<SocialComponentProps> = ({ block, isSelected }) => {
+export const SocialBlock: React.FC<BlockComponentProps> = ({ block, isSelected }) => {
+  const props = block.props as ISocialBlockProps;
   const { 
     networks = [], 
     iconSize = '24px',
     spacing = '16px',
     alignment = 'center'
-  } = block.props;
+  } = props;
   
   return (
     <div 
-      className={`w-full transition-all ${isSelected ? 'outline outline-2 outline-blue-500 outline-offset-2' : ''}`}
+      className={`w-full transition-all ${isSelected ? 'outline-2 outline-blue-500 outline-offset-2' : ''}`}
     >
       <div 
         className="flex flex-wrap gap-4" 
@@ -57,7 +53,7 @@ export const socialConfig: BaseComponentConfig = {
   type: 'social',
   label: 'Social Links',
   description: 'Add social media links',
-  category: ComponentCategory.SOCIAL,
+  category: ComponentCategory.Interactive,
   icon: 'share',
   defaultProps: {
     networks: [

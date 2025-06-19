@@ -4,7 +4,7 @@ import { ComponentCategory } from '@/lib/components/configs/ComponentCategories'
 export const textConfig: BaseComponentConfig = {
   id: 'text',
   type: 'text',
-  category: ComponentCategory.CONTENT,
+  category: ComponentCategory.Content,
   label: 'Text',
   description: 'A block for displaying and editing text content',
   defaultProps: {

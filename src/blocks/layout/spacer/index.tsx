@@ -1,19 +1,15 @@
 import React from 'react';
-import { Block, SpacerBlockProps as ISpacerBlockProps } from '@/types/blocks';
+import { BlockComponentProps, SpacerBlockProps as ISpacerBlockProps } from '@/types/blocks';
 import { BaseComponentConfig } from '@/lib/components/configs/BaseComponentConfig';
 import { ComponentCategory } from '@/lib/components/configs/ComponentCategories';
 
-interface SpacerComponentProps {
-  block: Block & { props: ISpacerBlockProps };
-  isSelected?: boolean;
-}
-
-export const SpacerBlock: React.FC<SpacerComponentProps> = ({ block, isSelected }) => {
-  const { height = '20px' } = block.props;
+export const SpacerBlock: React.FC<BlockComponentProps> = ({ block, isSelected }) => {
+  const props = block.props as ISpacerBlockProps;
+  const { height = '20px' } = props;
   
   return (
     <div 
-      className={`w-full transition-all ${isSelected ? 'relative outline outline-2 outline-blue-500 outline-offset-2' : ''}`}
+      className={`w-full transition-all ${isSelected ? 'relative outline-2 outline-blue-500 outline-offset-2' : ''}`}
       style={{ height }}
     >
       {isSelected && (
@@ -32,7 +28,7 @@ export const spacerConfig: BaseComponentConfig = {
   type: 'spacer',
   label: 'Spacer',
   description: 'Add vertical spacing between elements',
-  category: ComponentCategory.LAYOUT,
+  category: ComponentCategory.Layout,
   icon: 'arrows-vertical',
   defaultProps: {
     height: '20px'

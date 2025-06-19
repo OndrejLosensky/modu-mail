@@ -4,7 +4,7 @@ import { ComponentCategory } from '@/lib/components/configs/ComponentCategories'
 export const buttonConfig: BaseComponentConfig = {
   id: 'button',
   type: 'button',
-  category: ComponentCategory.INTERACTIVE,
+  category: ComponentCategory.Interactive,
   label: 'Button',
   description: 'A clickable button element with customizable styles',
   defaultProps: {
