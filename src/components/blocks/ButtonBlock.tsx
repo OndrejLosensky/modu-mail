@@ -8,22 +8,35 @@ interface ButtonBlockProps {
 }
 
 export const ButtonBlock: React.FC<ButtonBlockProps> = ({ block, isSelected }) => {
-  const { text = 'Get Started', href = '#' } = block.props;
+  const { 
+    text = 'Get Started', 
+    href = '#',
+    fontSize = '16px',
+    color = '#ffffff',
+    backgroundColor = '#3b82f6',
+    textAlign = 'left'
+  } = block.props;
 
   return (
     <div className={`
-      p-4 flex justify-center
+      p-4 flex
       ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''}
+      ${textAlign === 'center' ? 'justify-center' : textAlign === 'right' ? 'justify-end' : 'justify-start'}
     `}>
-      <button 
-        type="button"
+      <a 
+        href={href}
+        style={{
+          fontSize,
+          color,
+          backgroundColor
+        }}
         className="
-          px-6 py-3 bg-blue-500 text-white rounded-lg font-medium
-          hover:bg-blue-600 transition-colors
+          px-6 py-3 rounded-lg font-medium no-underline
+          hover:opacity-90 transition-opacity
         "
       >
         {text}
-      </button>
+      </a>
     </div>
   );
 }; 

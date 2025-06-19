@@ -141,7 +141,10 @@ export default function Home() {
           onUpdateBlock={handleUpdateBlock}
           isDragging={!!draggedComponent || !!draggedBlock}
         />
-        <PropertiesPanel selectedBlock={selectedBlock} />
+        <PropertiesPanel 
+          selectedBlock={selectedBlock} 
+          onUpdateBlock={handleUpdateBlock}
+        />
       </EditorLayout>
       <DragOverlay 
         draggedBlock={draggedBlock || undefined}
@@ -152,16 +155,41 @@ export default function Home() {
 }
 
 function getDefaultProps(type: BlockType) {
+  const commonProps = {
+    textAlign: 'left' as const
+  };
+
   switch (type) {
     case 'text':
-      return { text: 'New text block' };
+      return { 
+        ...commonProps,
+        text: 'New text block',
+        fontSize: '24px',
+        color: '#1f2937'
+      };
     case 'button':
-      return { text: 'Get Started', href: '#' };
+      return { 
+        ...commonProps,
+        text: 'Get Started',
+        href: '#',
+        fontSize: '16px',
+        color: '#ffffff',
+        backgroundColor: '#3b82f6'
+      };
     case 'image':
-      return { src: '', alt: '' };
+      return {
+        ...commonProps,
+        src: '',
+        alt: ''
+      };
     case 'divider':
-      return {};
+      return {
+        ...commonProps,
+        borderStyle: 'solid' as const,
+        borderWidth: '1px',
+        color: '#e5e7eb'
+      };
     default:
-      return {};
+      return commonProps;
   }
 }

@@ -7,13 +7,26 @@ interface DividerBlockProps {
   onUpdate: (block: Block) => void;
 }
 
-export const DividerBlock: React.FC<DividerBlockProps> = ({ isSelected }) => {
+export const DividerBlock: React.FC<DividerBlockProps> = ({ block, isSelected }) => {
+  const { 
+    borderStyle = 'solid',
+    borderWidth = '1px',
+    color = '#e5e7eb'
+  } = block.props;
+
   return (
     <div className={`
       py-4 px-8
       ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''}
     `}>
-      <hr className="border-t-2 border-gray-200" />
+      <hr 
+        className="border-0" 
+        style={{
+          borderTopWidth: borderWidth,
+          borderTopStyle: borderStyle,
+          borderTopColor: color
+        }}
+      />
     </div>
   );
 }; 

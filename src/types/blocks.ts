@@ -7,6 +7,13 @@ export interface BlockProps {
   alt?: string;
   className?: string;
   style?: React.CSSProperties;
+  fontSize?: string;
+  color?: string;
+  backgroundColor?: string;
+  textAlign?: 'left' | 'center' | 'right';
+  borderStyle?: 'solid' | 'dashed' | 'dotted';
+  borderWidth?: string;
+  height?: string;
 }
 
 export interface Block {

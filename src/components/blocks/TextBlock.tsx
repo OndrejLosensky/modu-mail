@@ -9,7 +9,12 @@ interface TextBlockProps {
 
 export const TextBlock: React.FC<TextBlockProps> = ({ block, isSelected, onUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const text = block.props.text || 'New text block';
+  const { 
+    text = 'New text block',
+    fontSize = '24px',
+    color = '#1f2937',
+    textAlign = 'left'
+  } = block.props;
 
   const handleDoubleClick = () => {
     setIsEditing(true);
@@ -32,6 +37,11 @@ export const TextBlock: React.FC<TextBlockProps> = ({ block, isSelected, onUpdat
       onDoubleClick={handleDoubleClick}
       onBlur={handleBlur}
       suppressContentEditableWarning
+      style={{
+        fontSize,
+        color,
+        textAlign
+      }}
       className={`
         p-4 outline-none transition-all
         ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''}
