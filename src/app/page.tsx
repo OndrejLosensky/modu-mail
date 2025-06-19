@@ -9,9 +9,8 @@ import {
   useSensor,
   useSensors,
   PointerSensor,
-  // MouseSensor,
-  // TouchSensor
 } from '@dnd-kit/core';
+import { arrayMove } from '@dnd-kit/sortable';
 import { EditorLayout } from '@/components/layout/EditorLayout';
 import { PropertiesPanel } from '@/components/properties/PropertiesPanel';
 import { DragOverlay } from '@/components/DragOverlay';
@@ -45,11 +44,12 @@ const BLOCK_LABELS: Record<BlockType, string> = {
 export default function Home() {
   const [blocks, setBlocks] = useState<Block[]>([]);
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
-  const [draggedItem, setDraggedItem] = useState<{
+  const [draggedComponent, setDraggedComponent] = useState<{
     type: BlockType;
     icon: string;
     label: string;
   } | null>(null);
+  const [draggedBlock, setDraggedBlock] = useState<Block | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -61,39 +61,68 @@ export default function Home() {
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
-    const type = active.data.current?.type as BlockType;
     
-    if (type && type in BLOCK_ICONS) {
-      setDraggedItem({
+    // Handle new component drag
+    if (active.data.current?.type && !blocks.find(b => b.id === active.id)) {
+      const type = active.data.current.type as BlockType;
+      setDraggedComponent({
         type,
         icon: BLOCK_ICONS[type],
         label: BLOCK_LABELS[type]
       });
+      return;
+    }
+
+    // Handle block reordering
+    const draggedBlock = blocks.find(block => block.id === active.id);
+    if (draggedBlock) {
+      setDraggedBlock(draggedBlock);
     }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (over && over.id === 'email-canvas' && active.data.current) {
+    // Handle new component drop
+    if (over && over.id === 'email-canvas' && draggedComponent) {
+      const type = draggedComponent.type;
       const newBlock: Block = {
-        id: `${active.data.current.type}-${Date.now()}`,
-        type: active.data.current.type,
-        props: {}
+        id: `${type}-${Date.now()}`,
+        type,
+        props: getDefaultProps(type)
       };
 
       setBlocks((prev) => [...prev, newBlock]);
+      setSelectedBlock(newBlock);
+    }
+    // Handle block reordering
+    else if (over && draggedBlock) {
+      const oldIndex = blocks.findIndex(b => b.id === active.id);
+      const newIndex = blocks.findIndex(b => b.id === over.id);
+
+      if (oldIndex !== newIndex) {
+        setBlocks(blocks => arrayMove(blocks, oldIndex, newIndex));
+      }
     }
 
-    setDraggedItem(null);
+    setDraggedComponent(null);
+    setDraggedBlock(null);
   };
 
   const handleDragCancel = () => {
-    setDraggedItem(null);
+    setDraggedComponent(null);
+    setDraggedBlock(null);
   };
 
   const handleSelectBlock = (block: Block) => {
     setSelectedBlock(block);
+  };
+
+  const handleUpdateBlock = (updatedBlock: Block) => {
+    setBlocks(blocks.map(block => 
+      block.id === updatedBlock.id ? updatedBlock : block
+    ));
+    setSelectedBlock(updatedBlock);
   };
 
   return (
@@ -109,11 +138,30 @@ export default function Home() {
           blocks={blocks} 
           selectedBlock={selectedBlock}
           onSelectBlock={handleSelectBlock}
-          isDragging={!!draggedItem}
+          onUpdateBlock={handleUpdateBlock}
+          isDragging={!!draggedComponent || !!draggedBlock}
         />
         <PropertiesPanel selectedBlock={selectedBlock} />
       </EditorLayout>
-      <DragOverlay draggedItem={draggedItem} />
+      <DragOverlay 
+        draggedBlock={draggedBlock || undefined}
+        draggedComponent={draggedComponent || undefined}
+      />
     </DndContext>
   );
+}
+
+function getDefaultProps(type: BlockType) {
+  switch (type) {
+    case 'text':
+      return { text: 'New text block' };
+    case 'button':
+      return { text: 'Get Started', href: '#' };
+    case 'image':
+      return { src: '', alt: '' };
+    case 'divider':
+      return {};
+    default:
+      return {};
+  }
 }
