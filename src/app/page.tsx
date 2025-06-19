@@ -1,195 +1,180 @@
 'use client';
 
-import React, { useState } from 'react';
-import dynamic from 'next/dynamic';
+import React, { useState, useEffect } from 'react';
 import { 
   DndContext, 
-  DragEndEvent, 
+  DragEndEvent,
   DragStartEvent,
+  DragOverEvent,
   useSensor,
   useSensors,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
 } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
+import { ComponentsSidebar } from '@/components/sidebar/ComponentsSidebar';
+import { EmailCanvas } from '@/components/canvas/EmailCanvas';
+import { DragOverlay } from '@/components/DragOverlay';
 import { EditorLayout } from '@/components/layout/EditorLayout';
 import { PropertiesPanel } from '@/components/properties/PropertiesPanel';
-import { DragOverlay } from '@/components/DragOverlay';
 import { Block, BlockType } from '@/types/blocks';
-
-// Dynamically import components that use dnd-kit
-const ComponentsSidebar = dynamic(
-  () => import('@/components/sidebar/ComponentsSidebar').then(mod => mod.ComponentsSidebar),
-  { ssr: false }
-);
-
-const EmailCanvas = dynamic(
-  () => import('@/components/canvas/EmailCanvas').then(mod => mod.EmailCanvas),
-  { ssr: false }
-);
-
-const BLOCK_ICONS: Record<BlockType, string> = {
-  text: 'T',
-  image: '🖼',
-  button: '↗',
-  divider: '—'
-};
-
-const BLOCK_LABELS: Record<BlockType, string> = {
-  text: 'Text Block',
-  image: 'Image',
-  button: 'Button',
-  divider: 'Divider'
-};
+import { initializeBlocks } from '@/blocks/init';
 
 export default function Home() {
   const [blocks, setBlocks] = useState<Block[]>([]);
+  const [activeBlock, setActiveBlock] = useState<Block | null>(null);
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null);
-  const [draggedComponent, setDraggedComponent] = useState<{
-    type: BlockType;
-    icon: string;
-    label: string;
-  } | null>(null);
-  const [draggedBlock, setDraggedBlock] = useState<Block | null>(null);
+  const [isClient, setIsClient] = useState(false);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 5,
-      },
-    })
-  );
+  const mouseSensor = useSensor(MouseSensor);
+  const touchSensor = useSensor(TouchSensor);
+  const sensors = useSensors(mouseSensor, touchSensor);
 
-  const handleDragStart = (event: DragStartEvent) => {
-    const { active } = event;
-    
-    // Handle new component drag
-    if (active.data.current?.type && !blocks.find(b => b.id === active.id)) {
-      const type = active.data.current.type as BlockType;
-      setDraggedComponent({
-        type,
-        icon: BLOCK_ICONS[type],
-        label: BLOCK_LABELS[type]
-      });
-      return;
-    }
+  useEffect(() => {
+    setIsClient(true);
+    initializeBlocks();
+  }, []);
 
-    // Handle block reordering
-    const draggedBlock = blocks.find(block => block.id === active.id);
-    if (draggedBlock) {
-      setDraggedBlock(draggedBlock);
+  const getDefaultProps = (type: BlockType) => {
+    switch (type) {
+      case 'text':
+        return {
+          text: 'New text block',
+          fontSize: '16px',
+          color: '#1f2937',
+          textAlign: 'left'
+        };
+      case 'image':
+        return {
+          src: 'https://via.placeholder.com/600x400',
+          alt: 'Image description',
+          width: '100%',
+          height: 'auto'
+        };
+      case 'button':
+        return {
+          text: 'Click me',
+          href: '#',
+          fontSize: '16px',
+          color: '#ffffff',
+          backgroundColor: '#3b82f6',
+          align: 'left'
+        };
+      case 'divider':
+        return {
+          color: '#e5e7eb',
+          height: '1px',
+          borderStyle: 'solid'
+        };
+      case 'container':
+        return {
+          maxWidth: '600px',
+          padding: '20px',
+          backgroundColor: '#ffffff',
+          align: 'center'
+        };
+      default:
+        return {};
     }
   };
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-
-    // Handle new component drop
-    if (over && over.id === 'email-canvas' && draggedComponent) {
-      const type = draggedComponent.type;
+  const handleDragStart = (event: DragStartEvent) => {
+    const type = event.active.data.current?.type as BlockType;
+    if (type) {
       const newBlock: Block = {
         id: `${type}-${Date.now()}`,
         type,
         props: getDefaultProps(type)
       };
+      setActiveBlock(newBlock);
+    } else {
+      const activeBlock = blocks.find(block => block.id === event.active.id);
+      if (activeBlock) {
+        setActiveBlock(activeBlock);
+      }
+    }
+  };
 
+  const handleDragOver = (event: DragOverEvent) => {
+    const { active, over } = event;
+    
+    if (!over) return;
+    
+    const activeId = active.id;
+    const overId = over.id;
+    
+    if (activeId === overId) return;
+
+    const activeIndex = blocks.findIndex(block => block.id === activeId);
+    const overIndex = blocks.findIndex(block => block.id === overId);
+
+    if (activeIndex !== -1 && overIndex !== -1) {
+      setBlocks(blocks => arrayMove(blocks, activeIndex, overIndex));
+    }
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    setActiveBlock(null);
+
+    const { active, over } = event;
+    if (over && active.data.current?.type) {
+      const type = active.data.current.type as BlockType;
+      const newBlock: Block = {
+        id: `${type}-${Date.now()}`,
+        type,
+        props: getDefaultProps(type)
+      };
       setBlocks((prev) => [...prev, newBlock]);
       setSelectedBlock(newBlock);
     }
-    // Handle block reordering
-    else if (over && draggedBlock) {
-      const oldIndex = blocks.findIndex(b => b.id === active.id);
-      const newIndex = blocks.findIndex(b => b.id === over.id);
-
-      if (oldIndex !== newIndex) {
-        setBlocks(blocks => arrayMove(blocks, oldIndex, newIndex));
-      }
-    }
-
-    setDraggedComponent(null);
-    setDraggedBlock(null);
   };
 
-  const handleDragCancel = () => {
-    setDraggedComponent(null);
-    setDraggedBlock(null);
+  const handleBlockUpdate = (updatedBlock: Block) => {
+    setBlocks((prev) =>
+      prev.map((block) =>
+        block.id === updatedBlock.id ? updatedBlock : block
+      )
+    );
+    setSelectedBlock(updatedBlock);
   };
 
   const handleSelectBlock = (block: Block) => {
     setSelectedBlock(block);
   };
 
-  const handleUpdateBlock = (updatedBlock: Block) => {
-    setBlocks(blocks.map(block => 
-      block.id === updatedBlock.id ? updatedBlock : block
-    ));
-    setSelectedBlock(updatedBlock);
-  };
+  // Don't render anything until client-side hydration is complete
+  if (!isClient) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading email builder...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <DndContext 
+    <DndContext
       sensors={sensors}
       onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
-      onDragCancel={handleDragCancel}
     >
       <EditorLayout blocks={blocks}>
         <ComponentsSidebar />
-        <EmailCanvas 
-          blocks={blocks} 
-          selectedBlock={selectedBlock}
+        <EmailCanvas
+          blocks={blocks}
           onSelectBlock={handleSelectBlock}
-          onUpdateBlock={handleUpdateBlock}
-          isDragging={!!draggedComponent || !!draggedBlock}
+          selectedBlock={selectedBlock}
+          onUpdateBlock={handleBlockUpdate}
         />
         <PropertiesPanel 
           selectedBlock={selectedBlock} 
-          onUpdateBlock={handleUpdateBlock}
+          onUpdateBlock={handleBlockUpdate}
         />
       </EditorLayout>
-      <DragOverlay 
-        draggedBlock={draggedBlock || undefined}
-        draggedComponent={draggedComponent || undefined}
-      />
+      <DragOverlay draggedBlock={activeBlock || undefined} />
     </DndContext>
   );
-}
-
-function getDefaultProps(type: BlockType) {
-  const commonProps = {
-    textAlign: 'left' as const
-  };
-
-  switch (type) {
-    case 'text':
-      return { 
-        ...commonProps,
-        text: 'New text block',
-        fontSize: '24px',
-        color: '#1f2937'
-      };
-    case 'button':
-      return { 
-        ...commonProps,
-        text: 'Get Started',
-        href: '#',
-        fontSize: '16px',
-        color: '#ffffff',
-        backgroundColor: '#3b82f6'
-      };
-    case 'image':
-      return {
-        ...commonProps,
-        src: '',
-        alt: ''
-      };
-    case 'divider':
-      return {
-        ...commonProps,
-        borderStyle: 'solid' as const,
-        borderWidth: '1px',
-        color: '#e5e7eb'
-      };
-    default:
-      return commonProps;
-  }
 }

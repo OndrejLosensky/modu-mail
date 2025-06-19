@@ -1,34 +1,39 @@
 import React, { useState } from 'react';
-import { Block } from '@/types/blocks';
+import { BlockComponentProps, TextBlockProps } from '@/types/blocks';
 
-interface TextBlockProps {
-  block: Block;
-  isSelected: boolean;
-  onUpdate: (block: Block) => void;
-}
-
-export const TextBlock: React.FC<TextBlockProps> = ({ block, isSelected, onUpdate }) => {
+export const TextBlock: React.FC<BlockComponentProps> = ({ 
+  block, 
+  isSelected = false, 
+  onUpdate 
+}) => {
   const [isEditing, setIsEditing] = useState(false);
+  
+  // Type assertion to get the specific text props
+  const props = block.props as TextBlockProps;
   const { 
     text = 'New text block',
-    fontSize = '24px',
+    fontSize = '16px',
     color = '#1f2937',
     textAlign = 'left'
-  } = block.props;
+  } = props;
 
   const handleDoubleClick = () => {
-    setIsEditing(true);
+    if (onUpdate) {
+      setIsEditing(true);
+    }
   };
 
   const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
     setIsEditing(false);
-    onUpdate({
-      ...block,
-      props: {
-        ...block.props,
-        text: e.target.textContent || 'New text block'
-      }
-    });
+    if (onUpdate) {
+      onUpdate({
+        ...block,
+        props: {
+          ...block.props,
+          text: e.target.textContent || 'New text block'
+        }
+      });
+    }
   };
 
   return (
@@ -40,7 +45,8 @@ export const TextBlock: React.FC<TextBlockProps> = ({ block, isSelected, onUpdat
       style={{
         fontSize,
         color,
-        textAlign
+        textAlign,
+        cursor: onUpdate ? 'text' : 'default'
       }}
       className={`
         p-4 outline-none transition-all

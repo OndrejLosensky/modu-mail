@@ -1,6 +1,6 @@
 import React from 'react';
 import { Block } from '@/types/blocks';
-import { Toolbar } from '@/components/Toolbar';
+import { Toolbar } from './Toolbar';
 
 interface EditorLayoutProps {
   children: React.ReactNode;

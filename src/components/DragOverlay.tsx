@@ -1,7 +1,7 @@
 import React from 'react';
 import { DragOverlay as DndDragOverlay } from '@dnd-kit/core';
 import { Block } from '@/types/blocks';
-import { BlockRenderer } from './blocks/BlockRenderer';
+import { BlockRenderer } from '@/blocks/BlockRenderer';
 
 interface DragOverlayProps {
   draggedBlock?: Block;

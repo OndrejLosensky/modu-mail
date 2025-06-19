@@ -2,7 +2,7 @@ import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { Block } from '@/types/blocks';
-import { BlockRenderer } from '../blocks/BlockRenderer';
+import { BlockRenderer } from '@/blocks/BlockRenderer';
 import { SortableBlockWrapper } from './SortableBlockWrapper';
 
 interface EmailCanvasProps {
