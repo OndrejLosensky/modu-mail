@@ -1,9 +1,9 @@
 import React from 'react';
 import { DragOverlay as DndDragOverlay } from '@dnd-kit/core';
-import { Block, TextBlockProps, ButtonBlockProps, ImageBlockProps, DividerBlockProps, SpacerBlockProps, SocialBlockProps, ColumnsBlockProps } from '@/types/blocks';
+import { Block, TextBlockProps, ButtonBlockProps, ImageBlockProps, DividerBlockProps, SpacerBlockProps, SocialBlockProps} from '@/types/blocks';
 import { BlockRenderer } from '@/blocks/BlockRenderer';
 
-type BlockProps = TextBlockProps | ButtonBlockProps | ImageBlockProps | DividerBlockProps | SpacerBlockProps | SocialBlockProps | ColumnsBlockProps;
+type BlockProps = TextBlockProps | ButtonBlockProps | ImageBlockProps | DividerBlockProps | SpacerBlockProps | SocialBlockProps;
 
 interface DragOverlayProps {
   draggedBlock?: Block<BlockProps>;

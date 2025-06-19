@@ -17,12 +17,12 @@ import { EmailCanvas } from '@/components/canvas/EmailCanvas';
 import { DragOverlay } from '@/components/DragOverlay';
 import { EditorLayout } from '@/components/layout/EditorLayout';
 import { PropertiesPanel } from '@/components/properties/PropertiesPanel';
-import { Block, BlockType, TextBlockProps, ButtonBlockProps, ImageBlockProps, DividerBlockProps, SpacerBlockProps, SocialBlockProps, ColumnsBlockProps } from '@/types/blocks';
+import { Block, BlockType, TextBlockProps, ButtonBlockProps, ImageBlockProps, DividerBlockProps, SpacerBlockProps, SocialBlockProps } from '@/types/blocks';
 import { initializeBlocks } from '@/blocks/init';
 import { components } from '@/config/components';
 import { useBlocksStore } from '@/lib/store/blocks';
 
-type BlockProps = TextBlockProps | ButtonBlockProps | ImageBlockProps | DividerBlockProps | SpacerBlockProps | SocialBlockProps | ColumnsBlockProps;
+type BlockProps = TextBlockProps | ButtonBlockProps | ImageBlockProps | DividerBlockProps | SpacerBlockProps | SocialBlockProps;
 
 export default function Home() {
   const [activeBlock, setActiveBlock] = useState<Block<BlockProps> | null>(null);

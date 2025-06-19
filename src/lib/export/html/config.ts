@@ -5,10 +5,7 @@ import { imageHtmlConfig } from '@/lib/components/configs/image';
 import { dividerHtmlConfig } from '@/lib/components/configs/divider';
 import { spacerHtmlConfig } from '@/lib/components/configs/spacer';
 import { socialHtmlConfig } from '@/lib/components/configs/social';
-import { columnsHtmlConfig } from '@/lib/components/configs/columns';
 import { listHtmlConfig } from '@/lib/components/configs/list';
-
-
 
 export const blockHtmlConfigs = {
   text: textHtmlConfig as BlockHTMLConfig,
@@ -17,6 +14,5 @@ export const blockHtmlConfigs = {
   divider: dividerHtmlConfig as BlockHTMLConfig,
   spacer: spacerHtmlConfig as BlockHTMLConfig,
   social: socialHtmlConfig as BlockHTMLConfig,
-  columns: columnsHtmlConfig as BlockHTMLConfig,
   list: listHtmlConfig as BlockHTMLConfig,
 }; 

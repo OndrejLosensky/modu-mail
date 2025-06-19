@@ -1,10 +1,10 @@
 import { ComponentBuilder } from '../ComponentBuilder';
 import { ComponentCategory } from './ComponentCategories';
 import { PropertyCategory } from '@/types/editor';
-import { Block } from '@/types/blocks';
+import { PropertyValue } from '@/types/editor';
 
 interface ListBlockProps {
-  items: string;
+  items: string[];
   listType: 'ordered' | 'unordered';
   color: string;
   fontSize: string;
@@ -23,7 +23,13 @@ const { component, html } = new ComponentBuilder<ListBlockProps>('list')
     type: 'text',
     label: 'List Items',
     category: PropertyCategory.Content,
-    defaultValue: 'Item 1\nItem 2\nItem 3',
+    defaultValue: 'First item\nSecond item\nThird item',
+    transform: (value: PropertyValue) => {
+      if (typeof value === 'string') {
+        return value.split('\n').filter(item => item.trim()) as unknown as PropertyValue;
+      }
+      return Array.isArray(value) ? value as unknown as PropertyValue : [''] as unknown as PropertyValue;
+    },
   })
   .addProperty({
     key: 'listType',
@@ -45,7 +51,7 @@ const { component, html } = new ComponentBuilder<ListBlockProps>('list')
   })
   .addProperty({
     key: 'fontSize',
-    type: 'select',
+    type: 'size',
     label: 'Font Size',
     category: PropertyCategory.Style,
     defaultValue: '16px',
@@ -89,53 +95,50 @@ const { component, html } = new ComponentBuilder<ListBlockProps>('list')
     defaultValue: '#000000',
   })
   .setHtmlTag('table')
-  .setAttributeGenerator((block: Block<ListBlockProps>) => ({
-    role: 'presentation',
-    cellpadding: '0',
-    cellspacing: '0',
-    border: '0',
-    width: '100%',
-    align: block.props.textAlign,
-  }))
-  .setInnerContentGenerator((block: Block<ListBlockProps>) => {
-    const items = (block.props.items || '').split('\n').filter(item => item.trim());
-    const isOrdered = block.props.listType === 'ordered';
+  .setAttributeGenerator((block) => {
+    const props = block.props as unknown as ListBlockProps;
+    return {
+      role: 'presentation',
+      cellpadding: '0',
+      cellspacing: '0',
+      border: '0',
+      width: '100%',
+      align: props.textAlign || 'left',
+    };
+  })
+  .setInnerContentGenerator((block) => {
+    const props = block.props as unknown as ListBlockProps;
+    const items = Array.isArray(props.items) ? props.items : [];
+    const isOrdered = props.listType === 'ordered';
     
     const itemStyle = `
-      color: ${block.props.color};
-      font-size: ${block.props.fontSize};
+      color: ${props.color || '#000000'};
+      font-size: ${props.fontSize || '16px'};
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       margin: 0;
       padding: 0;
-      padding-bottom: ${block.props.spacing};
+      padding-bottom: ${props.spacing || '8px'};
+      text-decoration: none;
     `;
 
     const markerStyle = `
-      color: ${block.props.bulletColor};
-      display: inline-block;
-      width: 20px;
+      color: ${props.bulletColor || '#000000'};
+      width: 12px;
+      padding-right: 4px;
+      vertical-align: top;
       text-align: ${isOrdered ? 'right' : 'center'};
-      padding-right: 8px;
     `;
 
     const listItems = items.map((item, index) => `
       <tr>
-        <td style="${markerStyle}">${isOrdered ? `${index + 1}.` : '•'}</td>
+        <td width="12" style="${markerStyle}">${isOrdered ? `${index + 1}.` : '•'}</td>
         <td style="${itemStyle}">${item.trim()}</td>
       </tr>
     `).join('');
 
-    return `
-      <tr>
-        <td>
-          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-            ${listItems}
-          </table>
-        </td>
-      </tr>
-    `;
+    return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">${listItems}</table>`;
   })
   .build();
 
 export const listConfig = component;
-export const listHtmlConfig = html; 
+export const listHtmlConfig = html;

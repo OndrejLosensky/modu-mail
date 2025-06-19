@@ -1,6 +1,5 @@
 import { ComponentBuilder } from '../ComponentBuilder';
 import { ComponentCategory } from './ComponentCategories';
-import { Block } from '@/types/blocks';
 import { PropertyCategory } from '@/types/editor';
 
 interface ButtonBlockProps {
@@ -85,21 +84,27 @@ const { component, html } = new ComponentBuilder<ButtonBlockProps>('button')
     ],
   })
   .setHtmlTag('a')
-  .setAttributeGenerator((block: Block<ButtonBlockProps>) => ({
-    href: block.props.url,
-    target: '_blank',
-    rel: 'noopener noreferrer',
-    style: {
-      display: 'inline-block',
-      textDecoration: 'none',
-      textAlign: block.props.textAlign,
-      color: block.props.color,
-      backgroundColor: block.props.backgroundColor,
-      borderRadius: block.props.borderRadius,
-      padding: block.props.padding,
-    },
-  }))
-  .setInnerContentGenerator((block: Block<ButtonBlockProps>) => block.props.text || '')
+  .setAttributeGenerator((block) => {
+    const props = block.props as unknown as ButtonBlockProps;
+    return {
+      href: props.url,
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      style: {
+        display: 'inline-block',
+        textDecoration: 'none',
+        textAlign: props.textAlign,
+        color: props.color,
+        backgroundColor: props.backgroundColor,
+        borderRadius: props.borderRadius,
+        padding: props.padding,
+      },
+    };
+  })
+  .setInnerContentGenerator((block) => {
+    const props = block.props as unknown as ButtonBlockProps;
+    return props.text || '';
+  })
   .build();
 
 export const buttonConfig = component;

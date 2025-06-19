@@ -5,7 +5,7 @@ import { imageConfig } from './image';
 import { dividerConfig } from './divider';
 import { spacerConfig } from './spacer';
 import { socialConfig } from './social';
-import { columnsConfig } from './columns';
+import { listConfig } from './list';
 
 console.log('Available component configs:', {
   text: textConfig,
@@ -14,7 +14,7 @@ console.log('Available component configs:', {
   divider: dividerConfig,
   spacer: spacerConfig,
   social: socialConfig,
-  columns: columnsConfig
+  list: listConfig
 });
 
 // Export all component configs
@@ -25,7 +25,7 @@ export const componentConfigs = {
   divider: dividerConfig,
   spacer: spacerConfig,
   social: socialConfig,
-  columns: columnsConfig,
+  list: listConfig
 } as const;
 
 // Register all components

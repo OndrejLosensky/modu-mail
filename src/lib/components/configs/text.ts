@@ -1,13 +1,13 @@
 import { ComponentBuilder } from '../ComponentBuilder';
 import { ComponentCategory } from './ComponentCategories';
 import { PropertyCategory } from '@/types/editor';
-import { Block } from '@/types/blocks';
+import { Block, TextAlignment } from '@/types/blocks';
 
 interface TextBlockProps {
   content: string;
   color: string;
   fontSize: string;
-  textAlign: string;
+  textAlign: TextAlignment;
   lineHeight: string;
 }
 
@@ -32,7 +32,7 @@ const { component, html } = new ComponentBuilder<TextBlockProps>('text')
   })
   .addProperty({
     key: 'fontSize',
-    type: 'select',
+    type: 'size',
     label: 'Font Size',
     category: PropertyCategory.Style,
     defaultValue: '16px',
@@ -68,7 +68,10 @@ const { component, html } = new ComponentBuilder<TextBlockProps>('text')
     ],
   })
   .setHtmlTag('p')
-  .setInnerContentGenerator((block: Block<Record<string, unknown>>) => (block as unknown as Block<TextBlockProps>).props.content || '')
+  .setInnerContentGenerator((block: Block<Record<string, unknown>>) => {
+    const props = block.props as unknown as TextBlockProps;
+    return props.content || '';
+  })
   .build();
 
 export const textConfig = component;

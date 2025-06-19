@@ -1,6 +1,6 @@
-import { Block, TextBlockProps, ButtonBlockProps, ImageBlockProps, SocialBlockProps, ColumnsBlockProps } from '@/types/blocks';
+import { Block, TextBlockProps, ButtonBlockProps, ImageBlockProps, ListBlockProps, SocialBlockProps } from '@/types/blocks';
 import { BlockHTMLConfig } from '@/lib/export/html/types';
-import { textBlockStyles, buttonBlockStyles, imageBlockStyles, dividerBlockStyles, spacerBlockStyles, socialBlockStyles, socialIconStyles, columnsBlockStyles, columnStyles } from './styles';
+import { textBlockStyles, buttonBlockStyles, imageBlockStyles, dividerBlockStyles, listBlockStyles, spacerBlockStyles, socialBlockStyles, socialIconStyles } from './styles';
 
 type BlockConfigMap = Record<string, BlockHTMLConfig>;
 
@@ -12,7 +12,10 @@ export const blockConfigs: BlockConfigMap = {
   text: {
     tag: 'p',
     styleGenerator: asBlockGenerator(textBlockStyles),
-    innerContentGenerator: asBlockGenerator((block: Block<TextBlockProps>) => block.props.text || ''),
+    innerContentGenerator: (block: Block<Record<string, unknown>>) => {
+      const props = block.props as TextBlockProps;
+      return props.content || 'New text block';
+    },
   },
   button: {
     tag: 'a',
@@ -41,6 +44,57 @@ export const blockConfigs: BlockConfigMap = {
     styleGenerator: asBlockGenerator(spacerBlockStyles),
     innerContentGenerator: () => '&nbsp;',
   },
+  list: {
+    tag: 'table',
+    styleGenerator: asBlockGenerator(listBlockStyles),
+    attributeGenerator: asBlockGenerator((block: Block<ListBlockProps>) => ({
+      role: 'presentation',
+      cellpadding: '0',
+      cellspacing: '0',
+      border: '0',
+      width: '100%',
+      align: block.props.textAlign || 'left',
+    })),
+    innerContentGenerator: asBlockGenerator((block: Block<ListBlockProps>) => {
+      const items = block.props.items || [];
+      const filteredItems = items.filter((item: string) => item.trim());
+      const isOrdered = block.props.listType === 'ordered';
+      
+      const itemStyle = `
+        color: ${block.props.color};
+        font-size: ${block.props.fontSize};
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        padding-bottom: ${block.props.spacing};
+      `;
+
+      const markerStyle = `
+        color: ${block.props.bulletColor};
+        display: inline-block;
+        width: 20px;
+        text-align: ${isOrdered ? 'right' : 'center'};
+        padding-right: 8px;
+      `;
+
+      const listItems = filteredItems.map((item: string, index: number) => `
+        <tr>
+          <td style="${markerStyle}">${isOrdered ? `${index + 1}.` : '•'}</td>
+          <td style="${itemStyle}">${item.trim()}</td>
+        </tr>
+      `).join('');
+
+      return `
+        <tr>
+          <td>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+              ${listItems}
+            </table>
+          </td>
+        </tr>
+      `;
+    }),
+  },
   social: {
     tag: 'div',
     styleGenerator: asBlockGenerator(socialBlockStyles),
@@ -62,34 +116,5 @@ export const blockConfigs: BlockConfigMap = {
         `;
       }).join('');
     }),
-  },
-  columns: {
-    tag: 'div',
-    styleGenerator: asBlockGenerator(columnsBlockStyles),
-    innerContentGenerator: asBlockGenerator((block: Block<ColumnsBlockProps>) => {
-      const leftColumnStyle = columnStyles(
-        block.props.columnRatio || '1:1',
-        block.props.spacing || '10px',
-        block.props.verticalAlignment || 'top'
-      );
-      const rightColumnStyle = {
-        ...leftColumnStyle,
-        width: `${(1 - parseFloat(leftColumnStyle.width)) * 100}%`
-      };
-      const leftStyleString = Object.entries(leftColumnStyle)
-        .map(([key, value]) => `${key}: ${value};`)
-        .join(' ');
-      const rightStyleString = Object.entries(rightColumnStyle)
-        .map(([key, value]) => `${key}: ${value};`)
-        .join(' ');
-      return `
-        <div style="${leftStyleString}">
-          <!-- Left column content -->
-        </div>
-        <div style="${rightStyleString}">
-          <!-- Right column content -->
-        </div>
-      `;
-    }),
-  },
+  }
 }; 

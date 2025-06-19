@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BlockComponentProps, TextBlockProps } from '@/types/blocks';
+import { BlockComponentProps, TextBlockProps, TextAlignment } from '@/types/blocks';
 
 export const TextBlock: React.FC<BlockComponentProps> = ({ 
   block, 
@@ -11,7 +11,7 @@ export const TextBlock: React.FC<BlockComponentProps> = ({
   // Type assertion to get the specific text props
   const props = block.props as TextBlockProps;
   const { 
-    text = 'New text block',
+    content = 'New text block',
     fontSize = '16px',
     color = '#1f2937',
     textAlign = 'left'
@@ -30,7 +30,7 @@ export const TextBlock: React.FC<BlockComponentProps> = ({
         ...block,
         props: {
           ...block.props,
-          text: e.target.textContent || 'New text block'
+          content: e.target.textContent || 'New text block'
         }
       });
     }
@@ -45,7 +45,7 @@ export const TextBlock: React.FC<BlockComponentProps> = ({
       style={{
         fontSize,
         color,
-        textAlign,
+        textAlign: textAlign as TextAlignment,
         cursor: onUpdate ? 'text' : 'default'
       }}
       className={`
@@ -54,7 +54,7 @@ export const TextBlock: React.FC<BlockComponentProps> = ({
         ${isEditing ? 'bg-blue-50/50' : ''}
       `}
     >
-      {text}
+      {content}
     </div>
   );
 }; 

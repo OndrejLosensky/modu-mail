@@ -13,7 +13,7 @@ export interface CommonBlockProps {
 }
 
 export interface TextBlockProps {
-  text: string;
+  content: string;
   fontSize?: string;
   color?: string;
   textAlign?: string;
@@ -82,14 +82,7 @@ export interface SocialBlockProps {
   [key: string]: unknown;
 }
 
-export interface ColumnsBlockProps {
-  columnRatio: string;
-  spacing?: string;
-  verticalAlignment?: string;
-  backgroundColor?: string;
-  padding?: string;
-  [key: string]: unknown;
-}
+
 
 export type BlockProps = 
   | TextBlockProps 
@@ -99,8 +92,7 @@ export type BlockProps =
   | ContainerBlockProps
   | ListBlockProps
   | SpacerBlockProps
-  | SocialBlockProps
-  | ColumnsBlockProps;
+  | SocialBlockProps;
 
 export interface Block<T = Record<string, unknown>> {
   id: string;

@@ -1,6 +1,5 @@
 import { ComponentBuilder } from '../ComponentBuilder';
 import { ComponentCategory } from './ComponentCategories';
-import { Block } from '@/types/blocks';
 import { PropertyCategory } from '@/types/editor';
 
 interface SocialBlockProps {
@@ -99,19 +98,23 @@ const { component, html } = new ComponentBuilder<SocialBlockProps>('social')
     ],
   })
   .setHtmlTag('table')
-  .setAttributeGenerator((block: Block<SocialBlockProps>) => ({
-    role: 'presentation',
-    cellpadding: '0',
-    cellspacing: '0',
-    border: '0',
-    align: block.props.alignment,
-    style: {
-      margin: block.props.alignment === 'center' ? '0 auto' : '0',
-    },
-  }))
-  .setInnerContentGenerator((block: Block<SocialBlockProps>) => {
+  .setAttributeGenerator((block) => {
+    const props = block.props as unknown as SocialBlockProps;
+    return {
+      role: 'presentation',
+      cellpadding: '0',
+      cellspacing: '0',
+      border: '0',
+      align: props.alignment,
+      style: {
+        margin: props.alignment === 'center' ? '0 auto' : '0',
+      },
+    };
+  })
+  .setInnerContentGenerator((block) => {
+    const props = block.props as unknown as SocialBlockProps;
     const networks = ['facebook', 'twitter', 'linkedin', 'instagram', 'youtube'];
-    const activeNetworks = networks.filter(network => block.props[network as keyof SocialBlockProps]);
+    const activeNetworks = networks.filter(network => props[network as keyof SocialBlockProps]);
     
     if (activeNetworks.length === 0) return '';
 
@@ -121,14 +124,14 @@ const { component, html } = new ComponentBuilder<SocialBlockProps>('social')
           <table role="presentation" cellpadding="0" cellspacing="0" border="0">
             <tr>
               ${activeNetworks.map(network => `
-                <td style="padding-right: ${block.props.iconSpacing}">
-                  <a href="${block.props[network as keyof SocialBlockProps]}" target="_blank" rel="noopener noreferrer">
+                <td style="padding-right: ${props.iconSpacing}">
+                  <a href="${props[network as keyof SocialBlockProps]}" target="_blank" rel="noopener noreferrer">
                     <img 
                       src="/icons/${network}.svg" 
                       alt="${network}" 
-                      width="${block.props.iconSize}" 
-                      height="${block.props.iconSize}"
-                      style="display: block; max-width: 100%; height: auto; filter: ${block.props.iconColor !== '#000000' ? `brightness(0) saturate(100%) ${getColorFilter(block.props.iconColor)}` : 'none'};"
+                      width="${props.iconSize}" 
+                      height="${props.iconSize}"
+                      style="display: block; max-width: 100%; height: auto; filter: ${props.iconColor !== '#000000' ? `brightness(0) saturate(100%) ${getColorFilter(props.iconColor)}` : 'none'};"
                     />
                   </a>
                 </td>

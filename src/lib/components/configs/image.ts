@@ -79,30 +79,34 @@ const { component, html } = new ComponentBuilder<ImageBlockProps>('image')
     defaultValue: '',
   })
   .setHtmlTag('table')
-  .setAttributeGenerator((block) => ({
-    role: 'presentation',
-    cellpadding: '0',
-    cellspacing: '0',
-    border: '0',
-    width: '100%',
-    align: block.props.alignment,
-  }))
+  .setAttributeGenerator((block) => {
+    const props = block.props as unknown as ImageBlockProps;
+    return {
+      role: 'presentation',
+      cellpadding: '0',
+      cellspacing: '0',
+      border: '0',
+      width: '100%',
+      align: props.alignment,
+    };
+  })
   .setInnerContentGenerator((block) => {
+    const props = block.props as unknown as ImageBlockProps;
     const imageHtml = `<img 
-      src="${block.props.src}" 
-      alt="${block.props.alt}" 
-      width="${block.props.width}" 
-      height="${block.props.height}"
-      style="display: block; max-width: 100%; height: auto; border-radius: ${block.props.borderRadius};"
+      src="${props.src}" 
+      alt="${props.alt}" 
+      width="${props.width}" 
+      height="${props.height}"
+      style="display: block; max-width: 100%; height: auto; border-radius: ${props.borderRadius};"
     />`;
 
-    const content = block.props.link 
-      ? `<a href="${block.props.link}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">${imageHtml}</a>`
+    const content = props.link 
+      ? `<a href="${props.link}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">${imageHtml}</a>`
       : imageHtml;
 
     return `
       <tr>
-        <td align="${block.props.alignment}">
+        <td align="${props.alignment}">
           ${content}
         </td>
       </tr>

@@ -7,7 +7,7 @@ export interface HTMLExportOptions {
   containerStyles?: Record<string, string>;
 }
 
-export type StyleGenerator<T = Record<string, unknown>> = (block: Block<T>) => Record<string, string>;
+export type StyleGenerator<T = Record<string, unknown>> = (block: Block<T>) => Record<string, string | number>;
 
 export interface BlockHTMLConfig {
   tag: string;
