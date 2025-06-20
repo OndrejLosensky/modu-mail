@@ -1,4 +1,4 @@
-export type BlockType = 'text' | 'button' | 'image' | 'divider' | 'spacer' | 'social' | 'columns' | 'list' | 'container';
+export type BlockType = 'text' | 'button' | 'image' | 'divider' | 'spacer' | 'social' | 'columns' | 'list' | 'container' | 'group';
 
 export type TextAlignment = 'left' | 'center' | 'right' | 'justify';
 export type ListType = 'ordered' | 'unordered';
@@ -85,7 +85,14 @@ export interface SocialBlockProps {
   [key: string]: unknown;
 }
 
-
+export interface GroupBlockProps extends CommonBlockProps {
+  name?: string;
+  blocks: Block[];
+  backgroundColor?: string;
+  padding?: string;
+  borderRadius?: string;
+  [key: string]: unknown;
+}
 
 export type BlockProps = 
   | TextBlockProps 
@@ -95,12 +102,15 @@ export type BlockProps =
   | ContainerBlockProps
   | ListBlockProps
   | SpacerBlockProps
-  | SocialBlockProps;
+  | SocialBlockProps
+  | GroupBlockProps;
 
 export interface Block<T = Record<string, unknown>> {
   id: string;
   type: BlockType;
   props: T;
+  isDuplicate?: boolean;
+  groupId?: string;
 }
 
 export interface EmailTemplate {
@@ -112,5 +122,6 @@ export interface BlockComponentProps {
   block: Block;
   isSelected?: boolean;
   onUpdate?: (block: Block) => void;
+  onClick?: () => (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
   children?: React.ReactNode;
 } 
