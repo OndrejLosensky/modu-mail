@@ -38,9 +38,9 @@ export const SortableBlock: React.FC<SortableBlockProps> = ({ block, isSelected,
     >
       <BlockRenderer
         block={block}
-        isSelected={isSelected}
-        onUpdate={onUpdate}
-        onClick={onClick}
+        isSelected={isSelected || false}
+        onUpdate={onUpdate || (() => {})}
+        onClick={onClick || (() => {})}
       />
     </div>
   );

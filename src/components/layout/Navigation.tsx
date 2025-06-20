@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { exportToHTML } from '@/lib/export/html';
@@ -14,7 +14,7 @@ interface NavigationProps {
   onNewTemplate?: () => void;
 }
 
-export const Navigation: React.FC<NavigationProps> = ({ onNewTemplate }) => {
+function NavigationContent({ onNewTemplate }: NavigationProps) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -281,5 +281,20 @@ export const Navigation: React.FC<NavigationProps> = ({ onNewTemplate }) => {
         defaultDescription={currentTemplate?.description || ''}
       />
     </>
+  );
+}
+
+export const Navigation: React.FC<NavigationProps> = (props) => {
+  return (
+    <Suspense fallback={
+      <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="animate-pulse flex items-center gap-4">
+          <div className="h-8 w-24 bg-gray-200 rounded"></div>
+          <div className="h-8 w-32 bg-gray-200 rounded"></div>
+        </div>
+      </nav>
+    }>
+      <NavigationContent {...props} />
+    </Suspense>
   );
 };

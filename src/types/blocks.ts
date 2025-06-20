@@ -48,6 +48,7 @@ export interface DividerBlockProps {
   height?: string;
   style?: string;
   alignment?: TextAlignment;
+  spacing?: string;
 }
 
 export interface ContainerBlockProps extends CommonBlockProps {
@@ -66,6 +67,7 @@ export interface ListBlockProps {
   textAlign?: TextAlignment;
   spacing?: string;
   bulletColor?: string;
+  lineHeight?: string;
 }
 
 export interface SpacerBlockProps {

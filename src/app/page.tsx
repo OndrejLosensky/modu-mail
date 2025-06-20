@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { 
   DndContext, 
   DragEndEvent,
@@ -26,7 +26,7 @@ import { createClient } from '@/lib/supabase/client';
 
 type EditableBlockProps = TextBlockProps | ButtonBlockProps | ImageBlockProps | DividerBlockProps | ListBlockProps | SpacerBlockProps | SocialBlockProps;
 
-export default function Home() {
+function HomeContent() {
   const [activeBlock, setActiveBlock] = useState<Block<EditableBlockProps> | null>(null);
   const [selectedBlock, setSelectedBlock] = useState<Block<EditableBlockProps> | null>(null);
   const [draggedComponent, setDraggedComponent] = useState<{ type: string; icon: string; label: string; } | null>(null);
@@ -195,5 +195,26 @@ export default function Home() {
         draggedComponent={draggedComponent || undefined}
       />
     </DndContext>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="bg-gray-200 rounded-xl h-64"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }

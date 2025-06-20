@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useBlocksStore } from '@/lib/store/blocks';
 import Image from 'next/image';
@@ -83,7 +83,7 @@ function TemplateCard({ template, onUse }: { template: EmailTemplate; onUse: () 
           color: ${props.color || '#000'};
           text-align: ${props.textAlign || 'left'};
           font-weight: ${props.fontWeight || 'normal'};
-          line-height: ${props.lineHeight || 'normal'};
+          line-height: 1.5;
         ">${textContent}</div>`;
       }
       case 'button': {
@@ -113,11 +113,11 @@ function TemplateCard({ template, onUse }: { template: EmailTemplate; onUse: () 
       }
       case 'list': {
         const props = block.props as ListBlockProps;
-        const listType = props.type === 'ordered' ? 'ol' : 'ul';
+        const listType = props.listType === 'ordered' ? 'ol' : 'ul';
         return `<${listType} style="
           color: ${props.color || '#000'};
           font-size: ${props.fontSize || '16px'};
-          line-height: ${props.lineHeight || 'normal'};
+          line-height: ${props.lineHeight || '1.5'};
           margin: 0;
           padding-left: 1.5em;
         ">
@@ -138,7 +138,7 @@ function TemplateCard({ template, onUse }: { template: EmailTemplate; onUse: () 
       }
       case 'social': {
         const props = block.props as SocialBlockProps;
-        return `<div style="text-align: ${props.align || 'center'};">
+        return `<div style="text-align: ${props.alignment || 'center'};">
           ${props.networks.map(network => `
             <a href="${network.url}" style="
               display: inline-block;
@@ -147,7 +147,7 @@ function TemplateCard({ template, onUse }: { template: EmailTemplate; onUse: () 
               font-size: ${props.iconSize || '24px'};
               text-decoration: none;
             ">
-              <img src="/icons/${network.type}.svg" alt="${network.type}" style="
+              <img src="/icons/${network.platform}.svg" alt="${network.platform}" style="
                 width: ${props.iconSize || '24px'};
                 height: ${props.iconSize || '24px'};
               ">
@@ -227,7 +227,7 @@ function TemplateCard({ template, onUse }: { template: EmailTemplate; onUse: () 
   );
 }
 
-export default function TemplatesPage() {
+function TemplatesPageContent() {
   const router = useRouter();
   const setBlocks = useBlocksStore((state) => state.setBlocks);
   const [selectedCategory, setSelectedCategory] = useState<Category>('all');
@@ -297,5 +297,31 @@ export default function TemplatesPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function TemplatesPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
+            <div className="flex gap-3 mb-6">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <div key={i} className="h-10 bg-gray-200 rounded-full w-24"></div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="bg-gray-200 rounded-xl h-64"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    }>
+      <TemplatesPageContent />
+    </Suspense>
   );
 } 
