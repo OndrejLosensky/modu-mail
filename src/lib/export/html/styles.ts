@@ -3,7 +3,7 @@ import { StyleGenerator } from './types';
 import { Block } from '@/types/blocks';
 
 export const textBlockStyles: StyleGenerator<TextBlockProps> = (block: Block<TextBlockProps>) => {
-  const { fontSize = '16px', color = '#000000', textAlign = 'left' } = block.props;
+  const { fontSize = '16px', color = '#000000', textAlign = 'left', fontWeight = '400' } = block.props;
   
   return {
     margin: '0',
@@ -11,6 +11,7 @@ export const textBlockStyles: StyleGenerator<TextBlockProps> = (block: Block<Tex
     fontSize,
     color,
     textAlign,
+    fontWeight,
     lineHeight: '1.5',
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
   };

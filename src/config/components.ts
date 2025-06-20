@@ -47,7 +47,7 @@ export const components: ComponentConfig[] = [
     description: 'Add an image',
     category: 'media',
     defaultProps: {
-      src: 'https://via.placeholder.com/600x400',
+      src: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/new-year-background-736885_1280.jpg',
       alt: 'Image description',
       width: '100%',
       height: 'auto'

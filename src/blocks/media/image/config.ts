@@ -8,10 +8,10 @@ export const imageConfig: BaseComponentConfig = {
   label: 'Image',
   description: 'An image block with customizable properties',
   defaultProps: {
-    src: 'https://via.placeholder.com/600x400',
+    src: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/new-year-background-736885_1280.jpg',
     alt: 'Image description',
     width: '100%',
-    height: 'auto',
+    height: '100%',
     objectFit: 'cover',
     borderRadius: '0px',
     align: 'center',
@@ -31,15 +31,15 @@ export const imageConfig: BaseComponentConfig = {
       },
       width: (value) => {
         if (typeof value !== 'string') return 'Width must be a string';
-        if (!value.match(/^\d+(%|px|rem|em|auto)$/)) {
-          return 'Width must be a valid CSS unit (px, %, rem, em, auto)';
+        if (!value.match(/^(\d+%|auto)$/)) {
+          return 'Width must be a percentage value or auto';
         }
         return true;
       },
       height: (value) => {
         if (typeof value !== 'string') return 'Height must be a string';
-        if (!value.match(/^\d+(%|px|rem|em|auto)$/)) {
-          return 'Height must be a valid CSS unit (px, %, rem, em, auto)';
+        if (!value.match(/^(\d+%|auto)$/)) {
+          return 'Height must be a percentage value or auto';
         }
         return true;
       }
@@ -48,23 +48,23 @@ export const imageConfig: BaseComponentConfig = {
   presets: {
     'full-width': {
       width: '100%',
-      height: 'auto',
+      height: '100%',
       borderRadius: '0px',
     },
     'rounded': {
       width: '100%',
-      height: 'auto',
+      height: '100%',
       borderRadius: '8px',
     },
-    'circle': {
-      width: '200px',
-      height: '200px',
-      borderRadius: '50%',
+    'square': {
+      width: '50%',
+      height: '50%',
+      borderRadius: '0px',
       objectFit: 'cover',
     },
     'thumbnail': {
-      width: '100px',
-      height: '100px',
+      width: '25%',
+      height: '25%',
       borderRadius: '4px',
       objectFit: 'cover',
     }

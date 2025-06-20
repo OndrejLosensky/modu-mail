@@ -26,52 +26,101 @@ export const blockConfigs: BlockConfigMap = {
       style: 'width: 100%; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;'
     })),
     innerContentGenerator: asBlockGenerator((block: Block<ButtonBlockProps>) => {
+      const props = block.props as ButtonBlockProps;
+      const {
+        backgroundColor = '#3B82F6',
+        textColor = '#FFFFFF',
+        borderRadius = '6px',
+        paddingX = '24px',
+        paddingY = '12px',
+        align = 'left',
+        width = 'auto',
+        url = '#',
+        text = 'Click here'
+      } = props;
+
       const buttonStyle = `
+        background-color: ${backgroundColor};
+        border-radius: ${borderRadius};
+        color: ${textColor};
         display: inline-block;
-        padding: 12px 24px;
-        background-color: ${block.props.backgroundColor || '#3B82F6'};
-        color: ${block.props.textColor || '#FFFFFF'};
-        text-decoration: none;
-        border-radius: ${block.props.borderRadius || '6px'};
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         font-size: 16px;
+        font-weight: 500;
         line-height: 1;
+        margin: 0;
+        padding: ${paddingY} ${paddingX};
         text-align: center;
-        mso-padding-alt: 0;
-        ${block.props.width === 'full' ? 'width: 100%;' : ''}
+        text-decoration: none;
+        width: ${width === 'full' ? '100%' : 'auto'};
+        -webkit-text-size-adjust: none;
+        mso-hide: all;
       `;
 
-      const tdStyle = `
-        padding: 0;
-        text-align: ${block.props.align || 'left'};
-        font-size: 0;
-        mso-line-height-rule: exactly;
-      `;
+      const tdStyle = `text-align: ${align};`;
 
       return `
-        <tr>
-          <td style="${tdStyle}">
-            <table role="presentation" cellpadding="0" cellspacing="0" style="display: ${block.props.align === 'right' ? 'inline-table' : 'table'}; margin-left: ${block.props.align === 'center' ? 'auto' : '0'}; margin-right: ${block.props.align === 'left' ? '0' : 'auto'};">
-              <tr>
-                <td style="padding: 0;">
-                  <a href="${block.props.url || '#'}" target="_blank" rel="noopener noreferrer" style="${buttonStyle}">
-                    ${block.props.text || 'Click here'}
-                  </a>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
+        <tbody>
+          <tr>
+            <td style="${tdStyle}">
+              <a href="${url}" target="_blank" style="${buttonStyle}">
+                ${text}
+              </a>
+            </td>
+          </tr>
+        </tbody>
       `;
     }),
   },
   image: {
-    tag: 'img',
+    tag: 'table',
     styleGenerator: asBlockGenerator(imageBlockStyles),
-    attributeGenerator: asBlockGenerator((block: Block<ImageBlockProps>) => ({
-      src: block.props.src || '',
-      alt: block.props.alt || '',
+    attributeGenerator: asBlockGenerator(() => ({
+      role: 'presentation',
+      cellpadding: '0',
+      cellspacing: '0',
+      border: '0',
+      width: '100%',
+      style: 'width: 100%; border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;'
     })),
+    innerContentGenerator: asBlockGenerator((block: Block<ImageBlockProps>) => {
+      const props = block.props;
+      const {
+        src = 'https://cdn.pixabay.com/photo/2015/04/23/22/00/new-year-background-736885_1280.jpg',
+        alt = 'Image description',
+        width = '100%',
+        height = 'auto',
+        align = 'center'
+      } = props;
+
+      const imgStyle = `
+        display: block;
+        width: ${width};
+        height: ${height};
+        max-width: 100%;
+        margin: 0 auto;
+        border: 0;
+        outline: none;
+        text-decoration: none;
+        -ms-interpolation-mode: bicubic;
+      `;
+
+      return `
+        <tbody>
+          <tr>
+            <td align="${align}" style="text-align: ${align};">
+              <img 
+                src="${src}" 
+                alt="${alt}"
+                width="${width}"
+                height="${height}"
+                style="${imgStyle}"
+              />
+            </td>
+          </tr>
+        </tbody>
+      `;
+    }),
   },
   divider: {
     tag: 'hr',
@@ -85,50 +134,61 @@ export const blockConfigs: BlockConfigMap = {
   list: {
     tag: 'table',
     styleGenerator: asBlockGenerator(listBlockStyles),
-    attributeGenerator: asBlockGenerator(() => ({
-      role: 'presentation',
-      cellpadding: '0',
-      cellspacing: '0',
-      border: '0',
-      width: '100%',
-      align: 'left',
-    })),
+    attributeGenerator: asBlockGenerator((block) => {
+      const props = block.props as ListBlockProps;
+      return {
+        role: 'presentation',
+        cellpadding: '0',
+        cellspacing: '0',
+        border: '0',
+        width: '100%',
+        align: props.textAlign || 'left',
+      };
+    }),
     innerContentGenerator: asBlockGenerator((block: Block<ListBlockProps>) => {
-      const rawItems = block.props.items || [];
+      const props = block.props;
+      const rawItems = props.items || [];
       // Ensure we have a string array
       const items = Array.isArray(rawItems) 
         ? rawItems.filter(Boolean)
         : String(rawItems).split(/\n|,/).map(item => item.trim()).filter(Boolean);
 
-      const isOrdered = block.props.type === 'ordered';
+      const isOrdered = props.listType === 'ordered';
       
       const itemStyle = `
-        color: ${block.props.color || '#000000'};
-        font-size: ${block.props.fontSize || '16px'};
+        color: ${props.color || '#000000'};
+        font-size: ${props.fontSize || '16px'};
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         margin: 0;
         padding: 0;
-        padding-bottom: 8px;
+        padding-bottom: ${props.spacing || '8px'};
+        text-align: ${props.textAlign || 'left'};
       `;
 
       const markerStyle = `
-        color: ${block.props.color || '#000000'};
-        display: inline-block;
-        width: 20px;
-        text-align: ${isOrdered ? 'right' : 'center'};
+        color: ${props.bulletColor || props.color || '#000000'};
+        width: 24px;
         padding-right: 8px;
+        vertical-align: top;
+        text-align: ${isOrdered ? 'right' : 'center'};
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      `;
+
+      const containerStyle = `
+        width: 100%;
+        text-align: ${props.textAlign || 'left'};
       `;
 
       const listItems = items.map((item: string, index: number) => `
         <tr>
-          <td style="${markerStyle}">${isOrdered ? `${index + 1}.` : '•'}</td>
+          <td width="24" style="${markerStyle}">${isOrdered ? `${index + 1}.` : '•'}</td>
           <td style="${itemStyle}">${item.trim()}</td>
         </tr>
       `).join('');
 
       return `
         <tr>
-          <td>
+          <td style="${containerStyle}">
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
               ${listItems}
             </table>

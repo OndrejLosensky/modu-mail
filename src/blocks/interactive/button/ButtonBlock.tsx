@@ -15,7 +15,9 @@ export const ButtonBlock: React.FC<BlockComponentProps> = ({
     textColor = '#ffffff',
     borderRadius = '4px',
     width = 'auto',
-    align = 'center'
+    align = 'center',
+    paddingX = '24px',
+    paddingY = '12px'
   } = props;
 
   return (
@@ -25,31 +27,45 @@ export const ButtonBlock: React.FC<BlockComponentProps> = ({
         relative p-4 cursor-pointer transition-all duration-200
         ${isSelected ? 'ring-2 ring-blue-500' : 'hover:ring-2 hover:ring-blue-200'}
       `}
-      style={{
-        textAlign: align as 'left' | 'center' | 'right',
-      }}
     >
-      <a
-        href={url}
-        onClick={(e) => e.preventDefault()}
-        style={{
-          backgroundColor,
-          color: textColor,
-          borderRadius,
-          padding: '12px 24px',
-          display: 'inline-block',
-          textDecoration: 'none',
-          cursor: 'pointer',
-          transition: 'all 0.2s ease-in-out',
-          border: 'none',
-          fontFamily: 'sans-serif',
-          width: width === 'full' ? '100%' : 'auto',
-          textAlign: 'center',
-        }}
-        className="hover:opacity-90"
+      <table
+        role="presentation"
+        cellPadding="0"
+        cellSpacing="0"
+        style={{ width: '100%', borderCollapse: 'collapse' }}
       >
-        {text}
-      </a>
+        <tbody>
+          <tr>
+            <td style={{ textAlign: align }}>
+              <a
+                href={url}
+                onClick={(e) => e.preventDefault()}
+                style={{
+                  backgroundColor,
+                  color: textColor,
+                  borderRadius,
+                  padding: `${paddingY} ${paddingX}`,
+                  display: 'inline-block',
+                  textDecoration: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease-in-out',
+                  border: 'none',
+                  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+                  fontSize: '16px',
+                  fontWeight: 500,
+                  lineHeight: 1,
+                  margin: 0,
+                  width: width === 'full' ? '100%' : 'auto',
+                  textAlign: 'center',
+                }}
+                className="hover:opacity-90"
+              >
+                {text}
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
       {!isSelected && (
         <div className="absolute inset-0 bg-blue-500/0 hover:bg-blue-500/5 transition-colors duration-200" />
       )}

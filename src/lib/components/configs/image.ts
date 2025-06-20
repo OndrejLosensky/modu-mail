@@ -23,7 +23,7 @@ const { component, html } = new ComponentBuilder<ImageBlockProps>('image')
     type: 'url',
     label: 'Image URL',
     category: PropertyCategory.Content,
-    defaultValue: 'https://images.unsplash.com/photo-1707343843437-caacff5cfa74?w=800&auto=format&fit=crop',
+    defaultValue: 'https://cdn.pixabay.com/photo/2015/04/23/22/00/new-year-background-736885_1280.jpg',
   })
   .addProperty({
     key: 'alt',
@@ -34,17 +34,29 @@ const { component, html } = new ComponentBuilder<ImageBlockProps>('image')
   })
   .addProperty({
     key: 'width',
-    type: 'sizeWithUnit',
+    type: 'select',
     label: 'Width',
     category: PropertyCategory.Layout,
     defaultValue: '100%',
+    options: [
+      { label: 'Full Width', value: '100%' },
+      { label: '75%', value: '75%' },
+      { label: '50%', value: '50%' },
+      { label: '25%', value: '25%' },
+    ],
   })
   .addProperty({
     key: 'height',
-    type: 'sizeWithUnit',
+    type: 'select',
     label: 'Height',
     category: PropertyCategory.Layout,
-    defaultValue: '164px',
+    defaultValue: '100%',
+    options: [
+      { label: 'Auto', value: 'auto' },
+      { label: 'Full Height', value: '100%' },
+      { label: '75%', value: '75%' },
+      { label: '50%', value: '50%' },
+    ],
   })
   .addProperty({
     key: 'alignment',

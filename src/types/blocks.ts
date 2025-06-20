@@ -30,6 +30,8 @@ export interface ButtonBlockProps {
   borderRadius?: string;
   width?: 'auto' | 'full';
   align?: 'left' | 'center' | 'right';
+  paddingX?: string;
+  paddingY?: string;
 }
 
 export interface ImageBlockProps {
@@ -43,8 +45,9 @@ export interface ImageBlockProps {
 export interface DividerBlockProps {
   color?: string;
   width?: string;
+  height?: string;
   style?: string;
-  spacing?: string;
+  alignment?: TextAlignment;
 }
 
 export interface ContainerBlockProps extends CommonBlockProps {
@@ -57,10 +60,12 @@ export interface ContainerBlockProps extends CommonBlockProps {
 
 export interface ListBlockProps {
   items: string[];
-  type?: 'ordered' | 'unordered';
+  listType?: 'ordered' | 'unordered';
   color?: string;
   fontSize?: string;
-  lineHeight?: string;
+  textAlign?: TextAlignment;
+  spacing?: string;
+  bulletColor?: string;
 }
 
 export interface SpacerBlockProps {

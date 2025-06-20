@@ -1,33 +1,28 @@
 import React from 'react';
-import { BlockComponentProps } from '@/types/blocks';
+import { BlockComponentProps, ListBlockProps } from '@/types/blocks';
 
 export const ListBlock: React.FC<BlockComponentProps> = ({ 
   block,
   isSelected = false,
   onClick
 }) => {
-  const props = block.props as unknown as { 
-    items: string[] | string;
-    type?: 'ordered' | 'unordered';
-    color?: string;
-    fontSize?: string;
-    lineHeight?: string;
-  };
-
+  const props = block.props as ListBlockProps;
   const {
     items = [],
-    type = 'unordered',
-    color = '#000000',
+    listType = 'unordered',
+    color = '#1f2937',
     fontSize = '16px',
-    lineHeight = '1.5'
+    textAlign = 'left',
+    spacing = '8px',
+    bulletColor = color
   } = props;
 
-  // Parse items if they're provided as a string
-  const parsedItems: string[] = typeof items === 'string' 
-    ? items.split(/\n|,/).map((item: string) => item.trim()).filter(Boolean)
-    : Array.isArray(items) ? items : [];
+  // Ensure items is an array
+  const parsedItems = Array.isArray(items) 
+    ? items.filter(Boolean)
+    : [];
 
-  const ListTag = type === 'ordered' ? 'ol' : 'ul';
+  const ListTag = listType === 'ordered' ? 'ol' : 'ul';
 
   return (
     <div
@@ -39,15 +34,23 @@ export const ListBlock: React.FC<BlockComponentProps> = ({
     >
       <ListTag
         style={{
-          color,
+          color: bulletColor,
           fontSize,
-          lineHeight,
+          lineHeight: '1.5',
           margin: 0,
-          paddingLeft: '1.5em',
+          paddingLeft: '2em',
+          textAlign,
         }}
       >
         {parsedItems.map((item: string, index: number) => (
-          <li key={index}>{item}</li>
+          <li 
+            key={index}
+            style={{
+              marginBottom: index < parsedItems.length - 1 ? spacing : 0,
+            }}
+          >
+            <span style={{ color }}>{item}</span>
+          </li>
         ))}
       </ListTag>
       {!isSelected && (

@@ -2,7 +2,7 @@ import { Block, TextBlockProps, ButtonBlockProps, ImageBlockProps, DividerBlockP
 import { StyleGenerator } from '@/config/blocks/types';
 
 export const textBlockStyles: StyleGenerator<TextBlockProps> = (block: Block<TextBlockProps>) => {
-  const { fontSize = '16px', color = '#000000', textAlign = 'left' } = block.props;
+  const { fontSize = '16px', color = '#000000', textAlign = 'left', fontWeight = '400' } = block.props;
   
   return {
     margin: '0',
@@ -10,67 +10,62 @@ export const textBlockStyles: StyleGenerator<TextBlockProps> = (block: Block<Tex
     fontSize,
     color,
     textAlign,
+    fontWeight,
     lineHeight: '1.5',
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
   };
 };
 
-export const buttonBlockStyles: StyleGenerator<ButtonBlockProps> = (block: Block<ButtonBlockProps>) => {
-  const { textColor: color = '#ffffff', backgroundColor = '#3b82f6', align: textAlign = 'center' } = block.props;
-
+export const buttonBlockStyles: StyleGenerator<ButtonBlockProps> = () => {
   return {
-    display: 'inline-block',
-    padding: '12px 24px',
-    margin: '8px 0',
-    fontSize: '16px',
-    color,
-    backgroundColor,
-    textAlign,
-    textDecoration: 'none',
-    borderRadius: '6px',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-    fontWeight: '500',
-    border: 'none',
-    cursor: 'pointer',
-    WebkitAppearance: 'none',
-    MozAppearance: 'none',
+    width: '100%',
+    borderCollapse: 'collapse',
+    msoTableLspace: '0pt',
+    msoTableRspace: '0pt',
   };
 };
 
-export const imageBlockStyles: StyleGenerator<ImageBlockProps> = (block: Block<ImageBlockProps>) => {
-  const { width = '100%', height = 'auto' } = block.props;
-  
+export const imageBlockStyles: StyleGenerator<ImageBlockProps> = () => {
   return {
-    display: 'block',
-    maxWidth: width,
-    height,
-    margin: '8px 0',
+    width: '100%',
+    margin: '0',
+    padding: '0',
+    borderCollapse: 'collapse',
+    msoTableLspace: '0pt',
+    msoTableRspace: '0pt',
   };
 };
 
 export const dividerBlockStyles: StyleGenerator<DividerBlockProps> = (block: Block<DividerBlockProps>) => {
-  const { color = '#e5e7eb', spacing = '1px' } = block.props;
+  const { color = '#e5e7eb', height = '1px', style = 'solid' } = block.props;
 
   return {
     display: 'block',
     width: '100%',
-    height: spacing,
+    borderTop: `${height} ${style} ${color}`,
     margin: '16px 0',
-    backgroundColor: color,
+    backgroundColor: 'transparent',
     border: 'none',
   };
 };
 
 export const listBlockStyles: StyleGenerator<ListBlockProps> = (block: Block<ListBlockProps>) => {
-  const { fontSize = '16px', color = '#1f2937' } = block.props;
+  const { 
+    fontSize = '16px', 
+    color = '#1f2937',
+    textAlign = 'left',
+    spacing = '8px',
+    bulletColor = '#1f2937'
+  } = block.props;
   
   return {
     fontSize,
     color,
-    textAlign: 'left',
+    textAlign,
     margin: '0',
     padding: '0',
     lineHeight: '1.5',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
   };
 };
 

@@ -8,7 +8,7 @@ interface TextBlockProps {
   color: string;
   fontSize: string;
   textAlign: TextAlignment;
-  thickness: string;
+  fontWeight: string;
 }
 
 const { component, html } = new ComponentBuilder<TextBlockProps>('text')
@@ -44,11 +44,11 @@ const { component, html } = new ComponentBuilder<TextBlockProps>('text')
     ],
   })
   .addProperty({
-    key: 'thickness',
+    key: 'fontWeight',
     type: 'select',
     label: 'Text Weight',
     category: PropertyCategory.Style,
-    defaultValue: 'normal',
+    defaultValue: '400',
     options: [
       { label: 'Light', value: '300' },
       { label: 'Normal', value: '400' },

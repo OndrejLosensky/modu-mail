@@ -11,6 +11,7 @@ export const textConfig: BaseComponentConfig = {
     fontSize: '16px',
     color: '#1f2937',
     textAlign: 'left',
+    fontWeight: '400'
   },
   validation: {
     required: ['text'],
@@ -27,6 +28,12 @@ export const textConfig: BaseComponentConfig = {
           return 'Text align must be one of: left, center, right, justify';
         }
         return true;
+      },
+      fontWeight: (value) => {
+        if (!['300', '400', '500', '600', '700'].includes(value as string)) {
+          return 'Font weight must be one of: 300, 400, 500, 600, 700';
+        }
+        return true;
       }
     }
   },
@@ -35,21 +42,25 @@ export const textConfig: BaseComponentConfig = {
       fontSize: '24px',
       color: '#111827',
       textAlign: 'left',
+      fontWeight: '700'
     },
     'subheading': {
       fontSize: '20px',
       color: '#374151',
       textAlign: 'left',
+      fontWeight: '600'
     },
     'body': {
       fontSize: '16px',
       color: '#1f2937',
       textAlign: 'left',
+      fontWeight: '400'
     },
     'centered': {
       fontSize: '16px',
       color: '#1f2937',
       textAlign: 'center',
+      fontWeight: '400'
     }
   }
 }; 
