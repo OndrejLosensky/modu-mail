@@ -113,4 +113,11 @@ export interface BlockComponentProps {
   onUpdate?: (block: Block) => void;
   onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
   children?: React.ReactNode;
+  isPreview?: boolean;
+}
+
+export interface DraggedComponent {
+  type: string;
+  icon: string;
+  label: string;
 } 

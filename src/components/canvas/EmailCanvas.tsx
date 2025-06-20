@@ -12,6 +12,7 @@ interface EmailCanvasProps {
   selectedBlock: Block | null;
   isDragging?: boolean;
   onUpdateBlock: (block: Block) => void;
+  isPreview?: boolean;
 }
 
 export const EmailCanvas: React.FC<EmailCanvasProps> = ({ 
@@ -20,6 +21,7 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
   selectedBlock,
   isDragging = false,
   onUpdateBlock,
+  isPreview = false,
 }) => {
   const { setNodeRef, isOver } = useDroppable({
     id: 'email-canvas',
@@ -56,28 +58,32 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
   };
 
   return (
-    <div className="flex-1 bg-gray-100 p-8 h-full overflow-auto">
+    <div className={`flex-1 bg-gray-100 p-8 h-full overflow-auto ${isPreview ? 'bg-gray-900' : ''}`}>
       <div className="max-w-2xl mx-auto">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-xl font-semibold text-gray-900">Email Canvas</h1>
-          <div className="flex items-center gap-4">
-            <div className="text-sm text-gray-500">
-              {blocks.length} {blocks.length === 1 ? 'component' : 'components'}
+        {!isPreview && (
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-xl font-semibold text-gray-900">Email Canvas</h1>
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-gray-500">
+                {blocks.length} {blocks.length === 1 ? 'component' : 'components'}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="px-8 py-4 border-b border-gray-100">
-            <div className="w-32 h-2 bg-gray-100 rounded-full" />
-          </div>
+        <div className={`bg-white rounded-lg shadow-sm ${isPreview ? 'max-w-xl mx-auto' : ''}`}>
+          {!isPreview && (
+            <div className="px-8 py-4 border-b border-gray-100">
+              <div className="w-32 h-2 bg-gray-100 rounded-full" />
+            </div>
+          )}
 
-          <div className="p-8">
+          <div className={`${isPreview ? 'p-4' : 'p-8'}`}>
             <div 
               ref={setNodeRef}
               className={`
                 min-h-[400px] rounded-lg p-4 transition-all duration-200
-                ${isDragging ? 'border-2 border-dashed' : 'border'}
+                ${isDragging ? 'border-2 border-dashed' : isPreview ? '' : 'border'}
                 ${isOver 
                   ? 'border-blue-500 bg-blue-50/50' 
                   : isDragging 
@@ -112,12 +118,14 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
                         isDuplicate={block.isDuplicate}
                         isNew={block.id === newBlockId}
                         isSelected={selectedBlock?.id === block.id}
+                        isPreview={isPreview}
                       >
                         <BlockRenderer
                           block={block}
                           isSelected={selectedBlock?.id === block.id}
                           onUpdate={onUpdateBlock}
                           onClick={handleBlockClick(block)}
+                          isPreview={isPreview}
                         />
                       </SortableBlockWrapper>
                     ))}
@@ -127,9 +135,11 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
             </div>
           </div>
 
-          <div className="px-8 py-4 border-t border-gray-100">
-            <div className="w-24 h-2 bg-gray-100 rounded-full" />
-          </div>
+          {!isPreview && (
+            <div className="px-8 py-4 border-t border-gray-100">
+              <div className="w-24 h-2 bg-gray-100 rounded-full" />
+            </div>
+          )}
         </div>
       </div>
     </div>

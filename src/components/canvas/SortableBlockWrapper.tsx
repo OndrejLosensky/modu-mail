@@ -5,21 +5,23 @@ import { CSS } from '@dnd-kit/utilities';
 interface SortableBlockWrapperProps {
   id: string;
   children: React.ReactNode;
-  onDelete?: (id: string) => void;
-  onDuplicate?: (id: string) => void;
+  onDelete: (id: string) => void;
+  onDuplicate: (id: string) => void;
   isDuplicate?: boolean;
   isNew?: boolean;
   isSelected?: boolean;
+  isPreview?: boolean;
 }
 
-export const SortableBlockWrapper: React.FC<SortableBlockWrapperProps> = ({ 
-  id, 
-  children, 
+export const SortableBlockWrapper: React.FC<SortableBlockWrapperProps> = ({
+  id,
+  children,
   onDelete,
   onDuplicate,
-  isDuplicate,
-  isNew,
-  isSelected
+  isDuplicate = false,
+  isNew = false,
+  isSelected = false,
+  isPreview = false,
 }) => {
   const [showNewAnimation, setShowNewAnimation] = useState(isNew);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -41,7 +43,10 @@ export const SortableBlockWrapper: React.FC<SortableBlockWrapperProps> = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = useSortable({ 
+    id,
+    disabled: isPreview
+  });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -57,17 +62,17 @@ export const SortableBlockWrapper: React.FC<SortableBlockWrapperProps> = ({
     <div 
       ref={setNodeRef} 
       style={style} 
-      {...attributes}
+      {...(!isPreview && attributes)}
       className={`
-        relative
+        relative group cursor-pointer
         ${showNewAnimation ? 'animate-slide-in bg-blue-50' : ''}
-        ${isSelected ? 'ring-2 ring-blue-500' : ''}
+        ${isSelected ? 'ring-2 ring-blue-500' : 'hover:ring-2 hover:ring-blue-200'}
       `}
     >
       <div className="group relative">
         {isDuplicate && (
           <div 
-            className="absolute -right-2 -top-2 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center cursor-help"
+            className="absolute -right-2 -top-2 w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center cursor-help z-10"
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
           >
@@ -83,11 +88,11 @@ export const SortableBlockWrapper: React.FC<SortableBlockWrapperProps> = ({
             )}
           </div>
         )}
-        <div className="absolute -left-24 top-1/2 -translate-y-1/2 flex items-center gap-2">
+        <div className="absolute -left-24 top-1/2 -translate-y-1/2 flex items-center gap-2 pointer-events-none z-10">
           <button
             type="button"
-            onClick={() => onDelete?.(id)}
-            className="flex items-center justify-center w-6 h-6 rounded border bg-white text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500 hover:border-red-500"
+            onClick={(e) => { e.stopPropagation(); onDelete(id); }}
+            className="flex items-center justify-center w-6 h-6 rounded border bg-white text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-500 hover:border-red-500 pointer-events-auto"
             title="Delete block"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -96,8 +101,8 @@ export const SortableBlockWrapper: React.FC<SortableBlockWrapperProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => onDuplicate?.(id)}
-            className="flex items-center justify-center w-6 h-6 rounded border bg-white text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity hover:text-blue-500 hover:border-blue-500"
+            onClick={(e) => { e.stopPropagation(); onDuplicate(id); }}
+            className="flex items-center justify-center w-6 h-6 rounded border bg-white text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity hover:text-blue-500 hover:border-blue-500 pointer-events-auto"
             title="Duplicate block"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -106,8 +111,8 @@ export const SortableBlockWrapper: React.FC<SortableBlockWrapperProps> = ({
             </svg>
           </button>
           <div 
-            className="flex items-center justify-center w-6 h-6 rounded border bg-white text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing" 
-            {...listeners}
+            className="flex items-center justify-center w-6 h-6 rounded border bg-white text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing pointer-events-auto" 
+            {...(!isPreview && listeners)}
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9 13C9.55228 13 10 12.5523 10 12C10 11.4477 9.55228 11 9 11C8.44772 11 8 11.4477 8 12C8 12.5523 8.44772 13 9 13Z" fill="currentColor" />
@@ -119,8 +124,18 @@ export const SortableBlockWrapper: React.FC<SortableBlockWrapperProps> = ({
             </svg>
           </div>
         </div>
-        {children}
+        <div className="relative">
+          {!isSelected && !isPreview && (
+            <div className="absolute inset-0 bg-blue-500/0 hover:bg-blue-500/5 transition-colors duration-200 z-0" />
+          )}
+          {children}
+        </div>
       </div>
+      {isSelected && !isPreview && (
+        <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded z-10">
+          {id.split('-')[0]}
+        </div>
+      )}
     </div>
   );
 }; 

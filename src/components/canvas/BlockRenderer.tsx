@@ -23,12 +23,19 @@ export const BlockRenderer: React.FC<BlockRendererProps> = ({
   onUpdate,
   isPreview = false,
 }) => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (!isPreview) {
+      e.stopPropagation();
+      onClick();
+    }
+  };
+
   const renderBlock = () => {
     const blockProps: BlockComponentProps = {
       block,
       isSelected,
-      onUpdate: (updatedBlock: Block) => onUpdate(updatedBlock),
-      onClick,
+      onUpdate: (updatedBlock) => onUpdate(updatedBlock),
+      onClick: handleClick,
       isPreview,
     };
 
@@ -54,16 +61,20 @@ export const BlockRenderer: React.FC<BlockRendererProps> = ({
 
   return (
     <div
-      onClick={onClick}
-      className={`relative group ${
-        isSelected && !isPreview ? 'ring-2 ring-blue-500 rounded-lg' : ''
-      }`}
+      onClick={handleClick}
+      className={`
+        relative group cursor-pointer
+        ${isSelected && !isPreview ? 'ring-2 ring-blue-500 rounded-lg' : ''}
+      `}
     >
       {renderBlock()}
       {isSelected && !isPreview && (
-        <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
+        <div className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded z-10">
           {block.type}
         </div>
+      )}
+      {!isSelected && !isPreview && (
+        <div className="absolute inset-0 bg-blue-500/0 hover:bg-blue-500/5 transition-colors duration-200" />
       )}
     </div>
   );
