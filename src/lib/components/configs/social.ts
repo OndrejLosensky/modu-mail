@@ -1,6 +1,7 @@
 import { ComponentBuilder } from '../ComponentBuilder';
 import { ComponentCategory } from './ComponentCategories';
 import { PropertyCategory } from '@/types/editor';
+import { TextAlignment } from '@/types/blocks';
 
 interface SocialBlockProps {
   facebook?: string;
@@ -11,7 +12,7 @@ interface SocialBlockProps {
   iconSize: string;
   iconSpacing: string;
   iconColor: string;
-  alignment: string;
+  alignment: TextAlignment;
 }
 
 const { component, html } = new ComponentBuilder<SocialBlockProps>('social')
@@ -56,27 +57,17 @@ const { component, html } = new ComponentBuilder<SocialBlockProps>('social')
   })
   .addProperty({
     key: 'iconSize',
-    type: 'select',
+    type: 'size',
     label: 'Icon Size',
     category: PropertyCategory.Style,
     defaultValue: '24px',
-    options: [
-      { label: 'Small (20px)', value: '20px' },
-      { label: 'Medium (24px)', value: '24px' },
-      { label: 'Large (32px)', value: '32px' },
-    ],
   })
   .addProperty({
     key: 'iconSpacing',
-    type: 'select',
+    type: 'size',
     label: 'Icon Spacing',
     category: PropertyCategory.Layout,
     defaultValue: '16px',
-    options: [
-      { label: 'Small (12px)', value: '12px' },
-      { label: 'Medium (16px)', value: '16px' },
-      { label: 'Large (24px)', value: '24px' },
-    ],
   })
   .addProperty({
     key: 'iconColor',
@@ -105,10 +96,8 @@ const { component, html } = new ComponentBuilder<SocialBlockProps>('social')
       cellpadding: '0',
       cellspacing: '0',
       border: '0',
+      width: '100%',
       align: props.alignment,
-      style: {
-        margin: props.alignment === 'center' ? '0 auto' : '0',
-      },
     };
   })
   .setInnerContentGenerator((block) => {
@@ -120,18 +109,18 @@ const { component, html } = new ComponentBuilder<SocialBlockProps>('social')
 
     return `
       <tr>
-        <td>
+        <td align="${props.alignment}">
           <table role="presentation" cellpadding="0" cellspacing="0" border="0">
             <tr>
-              ${activeNetworks.map(network => `
-                <td style="padding-right: ${props.iconSpacing}">
-                  <a href="${props[network as keyof SocialBlockProps]}" target="_blank" rel="noopener noreferrer">
+              ${activeNetworks.map((network, index) => `
+                <td ${index < activeNetworks.length - 1 ? `style="padding-right: ${props.iconSpacing};"` : ''}>
+                  <a href="${props[network as keyof SocialBlockProps]}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
                     <img 
-                      src="/icons/${network}.svg" 
+                      src="${process.env.NEXT_PUBLIC_BASE_URL || ''}/icons/${network}.svg" 
                       alt="${network}" 
                       width="${props.iconSize}" 
                       height="${props.iconSize}"
-                      style="display: block; max-width: 100%; height: auto; filter: ${props.iconColor !== '#000000' ? `brightness(0) saturate(100%) ${getColorFilter(props.iconColor)}` : 'none'};"
+                      style="display: block; border: 0; ${props.iconColor !== '#000000' ? `filter: ${getColorFilter(props.iconColor)};` : ''}"
                     />
                   </a>
                 </td>
@@ -150,7 +139,7 @@ function getColorFilter(hexColor: string): string {
   const g = parseInt(hexColor.slice(3, 5), 16) / 255;
   const b = parseInt(hexColor.slice(5, 7), 16) / 255;
 
-  return `invert(${Math.round(r * 100)}%) sepia(${Math.round(g * 100)}%) saturate(${Math.round(b * 100)}%)`;
+  return `brightness(0) saturate(100%) invert(${Math.round(r * 100)}%) sepia(${Math.round(g * 100)}%) saturate(${Math.round(b * 100)}%)`;
 }
 
 export const socialConfig = component;

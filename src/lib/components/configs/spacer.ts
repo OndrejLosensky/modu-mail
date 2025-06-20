@@ -2,14 +2,18 @@ import { ComponentBuilder } from '../ComponentBuilder';
 import { ComponentCategory } from './ComponentCategories';
 import { PropertyCategory } from '@/types/editor';
 
-const { component, html } = new ComponentBuilder('spacer')
+interface SpacerBlockProps {
+  height: string;
+}
+
+const { component, html } = new ComponentBuilder<SpacerBlockProps>('spacer')
   .setName('Spacer')
   .setDescription('Add vertical spacing between blocks')
   .setCategory(ComponentCategory.Layout)
   .setIcon('spacer')
   .addProperty({
     key: 'height',
-    type: 'select',
+    type: 'sizePresets',
     label: 'Height',
     category: PropertyCategory.Layout,
     defaultValue: '20px',
@@ -22,6 +26,13 @@ const { component, html } = new ComponentBuilder('spacer')
     ],
   })
   .setHtmlTag('div')
+  .setAttributeGenerator((block) => ({
+    style: {
+      height: block.props.height as string,
+      lineHeight: block.props.height as string,
+      fontSize: '0',
+    }
+  }))
   .setInnerContentGenerator(() => '&nbsp;')
   .build();
 

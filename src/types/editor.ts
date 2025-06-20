@@ -1,6 +1,6 @@
 import { ComponentCategory } from '@/lib/components/configs/ComponentCategories';
 
-export type PropertyType = 'text' | 'color' | 'size' | 'select' | 'number' | 'url' | 'alignment' | 'boolean';
+export type PropertyType = 'text' | 'color' | 'size' | 'select' | 'number' | 'url' | 'alignment' | 'boolean' | 'sizeWithUnit' | 'sizePresets';
 export enum PropertyCategory {
   Content = 'content',
   Style = 'style',

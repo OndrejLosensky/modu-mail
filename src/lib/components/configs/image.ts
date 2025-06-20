@@ -1,13 +1,14 @@
 import { ComponentBuilder } from '../ComponentBuilder';
 import { ComponentCategory } from './ComponentCategories';
 import { PropertyCategory } from '@/types/editor';
+import { TextAlignment } from '@/types/blocks';
 
 interface ImageBlockProps {
   src: string;
   alt: string;
   width: string;
   height: string;
-  alignment: string;
+  alignment: TextAlignment;
   borderRadius: string;
   link: string;
 }
@@ -22,7 +23,7 @@ const { component, html } = new ComponentBuilder<ImageBlockProps>('image')
     type: 'url',
     label: 'Image URL',
     category: PropertyCategory.Content,
-    defaultValue: 'https://via.placeholder.com/600x400',
+    defaultValue: 'https://images.unsplash.com/photo-1707343843437-caacff5cfa74?w=800&auto=format&fit=crop',
   })
   .addProperty({
     key: 'alt',
@@ -33,17 +34,17 @@ const { component, html } = new ComponentBuilder<ImageBlockProps>('image')
   })
   .addProperty({
     key: 'width',
-    type: 'text',
+    type: 'sizeWithUnit',
     label: 'Width',
     category: PropertyCategory.Layout,
     defaultValue: '100%',
   })
   .addProperty({
     key: 'height',
-    type: 'text',
+    type: 'sizeWithUnit',
     label: 'Height',
     category: PropertyCategory.Layout,
-    defaultValue: 'auto',
+    defaultValue: '164px',
   })
   .addProperty({
     key: 'alignment',
@@ -59,17 +60,10 @@ const { component, html } = new ComponentBuilder<ImageBlockProps>('image')
   })
   .addProperty({
     key: 'borderRadius',
-    type: 'select',
+    type: 'size',
     label: 'Border Radius',
     category: PropertyCategory.Style,
-    defaultValue: '0px',
-    options: [
-      { label: 'None', value: '0px' },
-      { label: 'Small', value: '4px' },
-      { label: 'Medium', value: '8px' },
-      { label: 'Large', value: '16px' },
-      { label: 'Round', value: '9999px' },
-    ],
+    defaultValue: '0',
   })
   .addProperty({
     key: 'link',
@@ -92,12 +86,20 @@ const { component, html } = new ComponentBuilder<ImageBlockProps>('image')
   })
   .setInnerContentGenerator((block) => {
     const props = block.props as unknown as ImageBlockProps;
+    const borderRadius = props.borderRadius ? `${props.borderRadius}px` : '0';
+
     const imageHtml = `<img 
       src="${props.src}" 
       alt="${props.alt}" 
       width="${props.width}" 
       height="${props.height}"
-      style="display: block; max-width: 100%; height: auto; border-radius: ${props.borderRadius};"
+      style="
+        display: block; 
+        max-width: 100%; 
+        height: ${props.height}; 
+        border-radius: ${borderRadius};
+        margin: 0 auto;
+      "
     />`;
 
     const content = props.link 
@@ -106,7 +108,7 @@ const { component, html } = new ComponentBuilder<ImageBlockProps>('image')
 
     return `
       <tr>
-        <td align="${props.alignment}">
+        <td align="${props.alignment}" style="text-align: ${props.alignment};">
           ${content}
         </td>
       </tr>

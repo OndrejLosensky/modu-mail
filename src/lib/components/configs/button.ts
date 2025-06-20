@@ -1,6 +1,7 @@
 import { ComponentBuilder } from '../ComponentBuilder';
 import { ComponentCategory } from './ComponentCategories';
 import { PropertyCategory } from '@/types/editor';
+import { TextAlignment } from '@/types/blocks';
 
 interface ButtonBlockProps {
   text: string;
@@ -8,8 +9,9 @@ interface ButtonBlockProps {
   color: string;
   backgroundColor: string;
   borderRadius: string;
-  padding: string;
-  textAlign: string;
+  paddingX: string;
+  paddingY: string;
+  alignment: TextAlignment;
 }
 
 const { component, html } = new ComponentBuilder<ButtonBlockProps>('button')
@@ -47,32 +49,27 @@ const { component, html } = new ComponentBuilder<ButtonBlockProps>('button')
   })
   .addProperty({
     key: 'borderRadius',
-    type: 'select',
+    type: 'size',
     label: 'Border Radius',
     category: PropertyCategory.Style,
     defaultValue: '4px',
-    options: [
-      { label: 'None', value: '0px' },
-      { label: 'Small', value: '4px' },
-      { label: 'Medium', value: '8px' },
-      { label: 'Large', value: '16px' },
-      { label: 'Pill', value: '9999px' },
-    ],
   })
   .addProperty({
-    key: 'padding',
-    type: 'select',
-    label: 'Padding',
+    key: 'paddingX',
+    type: 'size',
+    label: 'Horizontal Padding',
     category: PropertyCategory.Style,
-    defaultValue: '12px 24px',
-    options: [
-      { label: 'Small', value: '8px 16px' },
-      { label: 'Medium', value: '12px 24px' },
-      { label: 'Large', value: '16px 32px' },
-    ],
+    defaultValue: '24px',
   })
   .addProperty({
-    key: 'textAlign',
+    key: 'paddingY',
+    type: 'size',
+    label: 'Vertical Padding',
+    category: PropertyCategory.Style,
+    defaultValue: '12px',
+  })
+  .addProperty({
+    key: 'alignment',
     type: 'select',
     label: 'Alignment',
     category: PropertyCategory.Layout,
@@ -83,27 +80,48 @@ const { component, html } = new ComponentBuilder<ButtonBlockProps>('button')
       { label: 'Right', value: 'right' },
     ],
   })
-  .setHtmlTag('a')
+  .setHtmlTag('table')
   .setAttributeGenerator((block) => {
     const props = block.props as unknown as ButtonBlockProps;
     return {
-      href: props.url,
-      target: '_blank',
-      rel: 'noopener noreferrer',
-      style: {
-        display: 'inline-block',
-        textDecoration: 'none',
-        textAlign: props.textAlign,
-        color: props.color,
-        backgroundColor: props.backgroundColor,
-        borderRadius: props.borderRadius,
-        padding: props.padding,
-      },
+      role: 'presentation',
+      cellpadding: '0',
+      cellspacing: '0',
+      border: '0',
+      width: '100%',
+      align: props.alignment,
     };
   })
   .setInnerContentGenerator((block) => {
     const props = block.props as unknown as ButtonBlockProps;
-    return props.text || '';
+    return `
+      <tr>
+        <td align="${props.alignment}">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td bgcolor="${props.backgroundColor}" style="border-radius: ${props.borderRadius};">
+                <a 
+                  href="${props.url}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style="
+                    border: none;
+                    color: ${props.color};
+                    display: inline-block;
+                    font-family: sans-serif;
+                    text-decoration: none;
+                    padding: ${props.paddingY} ${props.paddingX};
+                    border-radius: ${props.borderRadius};
+                  "
+                >
+                  ${props.text || ''}
+                </a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    `;
   })
   .build();
 

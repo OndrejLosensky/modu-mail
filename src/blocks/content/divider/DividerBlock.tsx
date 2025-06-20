@@ -1,5 +1,5 @@
 import React from 'react';
-import { BlockComponentProps, DividerBlockProps } from '@/types/blocks';
+import { BlockComponentProps, DividerBlockProps, TextAlignment } from '@/types/blocks';
 
 export const DividerBlock: React.FC<BlockComponentProps> = ({ 
   block,
@@ -11,7 +11,7 @@ export const DividerBlock: React.FC<BlockComponentProps> = ({
     color = '#e5e7eb',
     height = '1px',
     width = '100%',
-    borderStyle = 'solid'
+    alignment = 'center'
   } = props;
 
   return (
@@ -20,15 +20,17 @@ export const DividerBlock: React.FC<BlockComponentProps> = ({
         p-4
         ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''}
       `}
+      style={{
+        textAlign: alignment as TextAlignment,
+      }}
     >
-      <hr
+      <div
         style={{
           margin: 0,
-          border: 'none',
-          height,
-          background: color,
           width: width as string,
-          borderTop: `${height} ${borderStyle} ${color}`,
+          height,
+          backgroundColor: color,
+          display: 'inline-block',
         }}
       />
     </div>

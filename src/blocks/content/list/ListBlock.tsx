@@ -83,7 +83,18 @@ export const ListBlock: React.FC<BlockComponentProps> = ({
       }}
     >
       {listType === 'ordered' ? (
-        <ol className="list-decimal list-inside" style={{ lineHeight: `calc(1.5 + ${spacing})` }}>
+        <ol 
+          className="list-decimal list-inside" 
+          style={{ 
+            marginTop: 0,
+            marginBottom: 0,
+            paddingLeft: 0,
+            lineHeight: 1.5,
+            '> li': {
+              marginBottom: spacing
+            }
+          } as React.CSSProperties}
+        >
           {items.map((item, index) => (
             <li 
               key={index}
@@ -96,13 +107,25 @@ export const ListBlock: React.FC<BlockComponentProps> = ({
               onKeyDown={(e) => handleKeyDown(e, index)}
               suppressContentEditableWarning
               className="outline-none"
+              style={{ marginBottom: index === items.length - 1 ? 0 : spacing }}
             >
               {item}
             </li>
           ))}
         </ol>
       ) : (
-        <ul className="list-disc list-inside" style={{ lineHeight: `calc(1.5 + ${spacing})` }}>
+        <ul 
+          className="list-disc list-inside" 
+          style={{ 
+            marginTop: 0,
+            marginBottom: 0,
+            paddingLeft: 0,
+            lineHeight: 1.5,
+            '> li': {
+              marginBottom: spacing
+            }
+          } as React.CSSProperties}
+        >
           {items.map((item, index) => (
             <li 
               key={index}
@@ -115,7 +138,10 @@ export const ListBlock: React.FC<BlockComponentProps> = ({
               onKeyDown={(e) => handleKeyDown(e, index)}
               suppressContentEditableWarning
               className="outline-none marker:text-[--bullet-color]"
-              style={{ '--bullet-color': bulletColor } as React.CSSProperties}
+              style={{ 
+                '--bullet-color': bulletColor,
+                marginBottom: index === items.length - 1 ? 0 : spacing 
+              } as React.CSSProperties}
             >
               {item}
             </li>

@@ -26,9 +26,11 @@ const { component, html } = new ComponentBuilder<ListBlockProps>('list')
     defaultValue: 'First item\nSecond item\nThird item',
     transform: (value: PropertyValue) => {
       if (typeof value === 'string') {
-        return value.split('\n').filter(item => item.trim()) as unknown as PropertyValue;
+        // Split by newlines and filter out empty items
+        return value.split(/\n|,/).map(item => item.trim()).filter(Boolean) as unknown as PropertyValue;
       }
-      return Array.isArray(value) ? value as unknown as PropertyValue : [''] as unknown as PropertyValue;
+      // If it's already an array, return it, otherwise return default array
+      return (Array.isArray(value) ? value : ['First item', 'Second item', 'Third item']) as unknown as PropertyValue;
     },
   })
   .addProperty({
@@ -76,7 +78,7 @@ const { component, html } = new ComponentBuilder<ListBlockProps>('list')
   })
   .addProperty({
     key: 'spacing',
-    type: 'select',
+    type: 'sizePresets',
     label: 'Item Spacing',
     category: PropertyCategory.Layout,
     defaultValue: '8px',

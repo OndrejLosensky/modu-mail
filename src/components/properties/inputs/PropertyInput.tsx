@@ -106,6 +106,30 @@ export const PropertyInput: React.FC<PropertyInputProps> = ({ config, value, onC
         </div>
       );
 
+    case 'sizeWithUnit':
+      const [size, unit] = (value as string)?.match(/^(\d+)(.*)$/)?.slice(1) || ['', 'px'];
+      return (
+        <div className="flex items-center gap-1">
+          <input
+            type="text"
+            value={size}
+            onChange={(e) => {
+              const numValue = e.target.value.replace(/[^0-9]/g, '');
+              handleChange(numValue ? `${numValue}${unit}` : '');
+            }}
+            className="w-full px-2.5 py-1.5 border border-gray-200 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+          />
+          <select
+            value={unit}
+            onChange={(e) => handleChange(`${size}${e.target.value}`)}
+            className="px-1 py-1.5 border border-gray-200 rounded-md text-xs text-gray-900 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm"
+          >
+            <option value="px">px</option>
+            <option value="%">%</option>
+          </select>
+        </div>
+      );
+
     case 'select':
       return (
         <select

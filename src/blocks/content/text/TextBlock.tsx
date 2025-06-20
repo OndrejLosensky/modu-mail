@@ -14,7 +14,8 @@ export const TextBlock: React.FC<BlockComponentProps> = ({
     content = 'New text block',
     fontSize = '16px',
     color = '#1f2937',
-    textAlign = 'left'
+    textAlign = 'left',
+    thickness = '400'
   } = props;
 
   const handleDoubleClick = () => {
@@ -30,22 +31,49 @@ export const TextBlock: React.FC<BlockComponentProps> = ({
         ...block,
         props: {
           ...block.props,
-          content: e.target.textContent || 'New text block'
+          content: e.target.innerText || 'New text block'
         }
       });
     }
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const br = document.createElement('br');
+        range.insertNode(br);
+        range.setStartAfter(br);
+        range.setEndAfter(br);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
+  };
+
+  // Convert line breaks to <br> tags for display
+  const formattedContent = content.split('\n').map((line, i, arr) => (
+    <React.Fragment key={i}>
+      {line}
+      {i < arr.length - 1 && <br />}
+    </React.Fragment>
+  ));
 
   return (
     <div 
       contentEditable={isEditing}
       onDoubleClick={handleDoubleClick}
       onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
       suppressContentEditableWarning
       style={{
         fontSize,
         color,
         textAlign: textAlign as TextAlignment,
+        fontWeight: thickness as string,
+        whiteSpace: 'pre-wrap',
         cursor: onUpdate ? 'text' : 'default'
       }}
       className={`
@@ -54,7 +82,7 @@ export const TextBlock: React.FC<BlockComponentProps> = ({
         ${isEditing ? 'bg-blue-50/50' : ''}
       `}
     >
-      {content}
+      {isEditing ? content : formattedContent}
     </div>
   );
 }; 

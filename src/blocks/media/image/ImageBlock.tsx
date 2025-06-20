@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BlockComponentProps, ImageBlockProps, TextAlignment, ObjectFit } from '@/types/blocks';
+import { BlockComponentProps, ImageBlockProps, TextAlignment } from '@/types/blocks';
 
 export const ImageBlock: React.FC<BlockComponentProps> = ({ 
   block,
@@ -10,15 +10,14 @@ export const ImageBlock: React.FC<BlockComponentProps> = ({
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   
   // Type assertion to get the specific image props
-  const props = block.props as ImageBlockProps;
+  const props = block.props as unknown as ImageBlockProps;
   const {
-    src = 'https://via.placeholder.com/600x400',
+    src = 'https://images.unsplash.com/photo-1707343843437-caacff5cfa74?w=800&auto=format&fit=crop',
     alt = 'Image description',
     width = '100%',
-    height = 'auto',
-    objectFit = 'cover',
-    borderRadius = '0px',
-    align = 'center'
+    height = '164px',
+    borderRadius = '0',
+    alignment = 'center'
   } = props;
 
   useEffect(() => {
@@ -44,20 +43,20 @@ export const ImageBlock: React.FC<BlockComponentProps> = ({
       } else {
         // If invalid URL and not a relative path, show placeholder
         setError(true);
-        setImageUrl('https://via.placeholder.com/600x400?text=Invalid+Image+URL');
+        setImageUrl('https://images.unsplash.com/photo-1707343843437-caacff5cfa74?w=800&auto=format&fit=crop');
       }
     }
   }, [src]);
 
   const handleError = () => {
     setError(true);
-    setImageUrl('https://via.placeholder.com/600x400?text=Image+Error');
+    setImageUrl('https://images.unsplash.com/photo-1707343843437-caacff5cfa74?w=800&auto=format&fit=crop');
     if (onUpdate) {
       onUpdate({
         ...block,
         props: {
           ...block.props,
-          src: 'https://via.placeholder.com/600x400?text=Image+Error',
+          src: 'https://images.unsplash.com/photo-1707343843437-caacff5cfa74?w=800&auto=format&fit=crop',
         }
       });
     }
@@ -68,7 +67,7 @@ export const ImageBlock: React.FC<BlockComponentProps> = ({
     return (
       <div
         style={{
-          textAlign: align as TextAlignment,
+          textAlign: alignment as TextAlignment,
           position: 'relative',
           padding: '16px',
           backgroundColor: '#f3f4f6',
@@ -92,31 +91,42 @@ export const ImageBlock: React.FC<BlockComponentProps> = ({
     );
   }
 
+  const imageElement = (
+    <img
+      src={imageUrl}
+      alt={alt}
+      onError={handleError}
+      style={{
+        width,
+        height,
+        maxWidth: '100%',
+        borderRadius: borderRadius ? `${borderRadius}px` : '0',
+        display: 'block',
+        margin: '0 auto',
+      }}
+      className="transition-all duration-200"
+    />
+  );
+
+  const linkUrl = (props.link || '') as string;
+
   return (
     <div
+      className={`p-4 ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''}`}
       style={{
-        textAlign: align as TextAlignment,
-        position: 'relative',
+        textAlign: alignment as TextAlignment,
       }}
-      className={`
-        p-4
-        ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''}
-      `}
     >
-      <img
-        src={imageUrl}
-        alt={alt}
-        onError={handleError}
-        style={{
-          width,
-          height,
-          objectFit: objectFit as ObjectFit,
-          borderRadius: borderRadius as string,
-          display: 'inline-block',
-          maxWidth: '100%',
-        }}
-        className="transition-all duration-200"
-      />
+      {linkUrl.trim() ? (
+        <a 
+          href={linkUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: 'none' }}
+        >
+          {imageElement}
+        </a>
+      ) : imageElement}
       {error && (
         <div 
           style={{

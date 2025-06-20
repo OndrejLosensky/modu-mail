@@ -8,7 +8,7 @@ interface TextBlockProps {
   color: string;
   fontSize: string;
   textAlign: TextAlignment;
-  lineHeight: string;
+  thickness: string;
 }
 
 const { component, html } = new ComponentBuilder<TextBlockProps>('text')
@@ -44,6 +44,20 @@ const { component, html } = new ComponentBuilder<TextBlockProps>('text')
     ],
   })
   .addProperty({
+    key: 'thickness',
+    type: 'select',
+    label: 'Text Weight',
+    category: PropertyCategory.Style,
+    defaultValue: 'normal',
+    options: [
+      { label: 'Light', value: '300' },
+      { label: 'Normal', value: '400' },
+      { label: 'Medium', value: '500' },
+      { label: 'Semi Bold', value: '600' },
+      { label: 'Bold', value: '700' },
+    ],
+  })
+  .addProperty({
     key: 'textAlign',
     type: 'select',
     label: 'Text Alignment',
@@ -53,18 +67,6 @@ const { component, html } = new ComponentBuilder<TextBlockProps>('text')
       { label: 'Left', value: 'left' },
       { label: 'Center', value: 'center' },
       { label: 'Right', value: 'right' },
-    ],
-  })
-  .addProperty({
-    key: 'lineHeight',
-    type: 'select',
-    label: 'Line Height',
-    category: PropertyCategory.Style,
-    defaultValue: '1.5',
-    options: [
-      { label: 'Tight (1.2)', value: '1.2' },
-      { label: 'Normal (1.5)', value: '1.5' },
-      { label: 'Relaxed (1.8)', value: '1.8' },
     ],
   })
   .setHtmlTag('p')

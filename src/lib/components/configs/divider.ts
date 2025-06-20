@@ -1,13 +1,13 @@
 import { ComponentBuilder } from '../ComponentBuilder';
 import { ComponentCategory } from './ComponentCategories';
 import { PropertyCategory } from '@/types/editor';
+import { TextAlignment } from '@/types/blocks';
 
 interface DividerBlockProps {
   color: string;
-  style: string;
   width: string;
   height: string;
-  alignment: string;
+  alignment: TextAlignment;
 }
 
 const { component, html } = new ComponentBuilder<DividerBlockProps>('divider')
@@ -21,18 +21,6 @@ const { component, html } = new ComponentBuilder<DividerBlockProps>('divider')
     label: 'Color',
     category: PropertyCategory.Style,
     defaultValue: '#e5e7eb',
-  })
-  .addProperty({
-    key: 'style',
-    type: 'select',
-    label: 'Style',
-    category: PropertyCategory.Style,
-    defaultValue: 'solid',
-    options: [
-      { label: 'Solid', value: 'solid' },
-      { label: 'Dashed', value: 'dashed' },
-      { label: 'Dotted', value: 'dotted' },
-    ],
   })
   .addProperty({
     key: 'width',
@@ -49,15 +37,10 @@ const { component, html } = new ComponentBuilder<DividerBlockProps>('divider')
   })
   .addProperty({
     key: 'height',
-    type: 'select',
+    type: 'size',
     label: 'Height',
     category: PropertyCategory.Style,
     defaultValue: '1px',
-    options: [
-      { label: 'Thin (1px)', value: '1px' },
-      { label: 'Medium (2px)', value: '2px' },
-      { label: 'Thick (4px)', value: '4px' },
-    ],
   })
   .addProperty({
     key: 'alignment',
@@ -78,19 +61,22 @@ const { component, html } = new ComponentBuilder<DividerBlockProps>('divider')
     cellspacing: '0',
     border: '0',
     width: '100%',
-    align: block.props.alignment as string,
+    align: block.props.alignment,
   }))
-  .setInnerContentGenerator((block) => `
-    <tr>
-      <td align="${block.props.alignment}">
-        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${block.props.width}" align="${block.props.alignment}">
-          <tr>
-            <td style="border-top: ${block.props.height} ${block.props.style} ${block.props.color}; font-size: 0; line-height: 0;">&nbsp;</td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  `)
+  .setInnerContentGenerator((block) => {
+    const props = block.props as unknown as DividerBlockProps;
+    return `
+      <tr>
+        <td align="${props.alignment}">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="${props.width}" align="${props.alignment}">
+            <tr>
+              <td bgcolor="${props.color}" style="font-size: 0; line-height: 0; height: ${props.height};">&nbsp;</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    `;
+  })
   .build();
 
 export const dividerConfig = component;

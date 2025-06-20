@@ -33,8 +33,11 @@ export interface ButtonBlockProps {
 export interface ImageBlockProps {
   src: string;
   alt: string;
-  width?: string;
-  height?: string;
+  width: string;
+  height: string;
+  alignment?: TextAlignment;
+  borderRadius?: string;
+  link?: string;
   [key: string]: unknown;
 }
 
