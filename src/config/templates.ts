@@ -77,7 +77,7 @@ export const templates: Template[] = [
             'Personalized onboarding session',
             '24/7 priority support'
           ],
-          type: 'unordered',
+          listType: 'unordered',
           fontSize: '16px',
           color: '#666666'
         }

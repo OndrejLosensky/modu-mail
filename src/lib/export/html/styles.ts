@@ -51,12 +51,12 @@ export const imageBlockStyles: StyleGenerator<ImageBlockProps> = (block: Block<I
 };
 
 export const dividerBlockStyles: StyleGenerator<DividerBlockProps> = (block: Block<DividerBlockProps>) => {
-  const { color = '#e5e7eb', spacing = '1px' } = block.props;
+  const { color = '#e5e7eb', height = '1px' } = block.props;
 
   return {
     display: 'block',
     width: '100%',
-    height: spacing,
+    height: height,
     margin: '16px 0',
     backgroundColor: color,
     border: 'none',

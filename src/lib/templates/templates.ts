@@ -162,7 +162,7 @@ export const templates: EmailTemplate[] = [
             'Seamless integration',
             'Advanced security features'
           ],
-          type: 'unordered',
+          listType: 'unordered',
           fontSize: '16px',
           color: '#333333',
           lineHeight: '1.6'

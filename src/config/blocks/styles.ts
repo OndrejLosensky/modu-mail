@@ -53,9 +53,7 @@ export const listBlockStyles: StyleGenerator<ListBlockProps> = (block: Block<Lis
   const { 
     fontSize = '16px', 
     color = '#1f2937',
-    textAlign = 'left',
-    spacing = '8px',
-    bulletColor = '#1f2937'
+    textAlign = 'left'
   } = block.props;
   
   return {
