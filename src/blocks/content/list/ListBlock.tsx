@@ -1,152 +1,45 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BlockComponentProps, ListBlockProps } from '@/types/blocks';
 
 export const ListBlock: React.FC<BlockComponentProps> = ({ 
-  block, 
+  block,
   isSelected = false,
-  onUpdate
+  onClick
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  
-  // Type assertion to get the specific list props
   const props = block.props as ListBlockProps;
-  const { 
-    items = ['First item', 'Second item', 'Third item'],
-    listType = 'unordered',
+  const {
+    items = [],
+    type = 'unordered',
+    color = '#000000',
     fontSize = '16px',
-    color = '#1f2937',
-    textAlign = 'left',
-    bulletColor = '#1f2937',
-    spacing = '0.5em'
+    lineHeight = '1.5'
   } = props;
 
-  const handleItemEdit = (index: number, newValue: string) => {
-    if (!onUpdate) return;
-
-    const newItems = [...items];
-    newItems[index] = newValue;
-
-    onUpdate({
-      ...block,
-      props: {
-        ...block.props,
-        items: newItems
-      }
-    });
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLLIElement>, index: number) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      if (!onUpdate) return;
-
-      const newItems = [...items];
-      newItems.splice(index + 1, 0, '');
-      
-      onUpdate({
-        ...block,
-        props: {
-          ...block.props,
-          items: newItems
-        }
-      });
-
-      // Focus will be handled by useEffect in the parent
-    } else if (e.key === 'Backspace' && items[index] === '' && items.length > 1) {
-      e.preventDefault();
-      if (!onUpdate) return;
-
-      const newItems = [...items];
-      newItems.splice(index, 1);
-      
-      onUpdate({
-        ...block,
-        props: {
-          ...block.props,
-          items: newItems
-        }
-      });
-    }
-  };
+  const ListTag = type === 'ordered' ? 'ol' : 'ul';
 
   return (
-    <div 
+    <div
+      onClick={onClick}
       className={`
-        p-4 outline-none transition-all
-        ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''}
-        ${isEditing ? 'bg-blue-50/50' : ''}
+        relative p-4 cursor-pointer transition-all duration-200
+        ${isSelected ? 'ring-2 ring-blue-500' : 'hover:ring-2 hover:ring-blue-200'}
       `}
-      style={{
-        color,
-        fontSize,
-        textAlign
-      }}
     >
-      {listType === 'ordered' ? (
-        <ol 
-          className="list-decimal list-inside" 
-          style={{ 
-            marginTop: 0,
-            marginBottom: 0,
-            paddingLeft: 0,
-            lineHeight: 1.5,
-            '> li': {
-              marginBottom: spacing
-            }
-          } as React.CSSProperties}
-        >
-          {items.map((item, index) => (
-            <li 
-              key={index}
-              contentEditable={!!onUpdate}
-              onFocus={() => setIsEditing(true)}
-              onBlur={(e) => {
-                setIsEditing(false);
-                handleItemEdit(index, e.currentTarget.textContent || '');
-              }}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              suppressContentEditableWarning
-              className="outline-none"
-              style={{ marginBottom: index === items.length - 1 ? 0 : spacing }}
-            >
-              {item}
-            </li>
-          ))}
-        </ol>
-      ) : (
-        <ul 
-          className="list-disc list-inside" 
-          style={{ 
-            marginTop: 0,
-            marginBottom: 0,
-            paddingLeft: 0,
-            lineHeight: 1.5,
-            '> li': {
-              marginBottom: spacing
-            }
-          } as React.CSSProperties}
-        >
-          {items.map((item, index) => (
-            <li 
-              key={index}
-              contentEditable={!!onUpdate}
-              onFocus={() => setIsEditing(true)}
-              onBlur={(e) => {
-                setIsEditing(false);
-                handleItemEdit(index, e.currentTarget.textContent || '');
-              }}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              suppressContentEditableWarning
-              className="outline-none marker:text-[--bullet-color]"
-              style={{ 
-                '--bullet-color': bulletColor,
-                marginBottom: index === items.length - 1 ? 0 : spacing 
-              } as React.CSSProperties}
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
+      <ListTag
+        style={{
+          color,
+          fontSize,
+          lineHeight,
+          margin: 0,
+          paddingLeft: '1.5em',
+        }}
+      >
+        {items.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ListTag>
+      {!isSelected && (
+        <div className="absolute inset-0 bg-blue-500/0 hover:bg-blue-500/5 transition-colors duration-200" />
       )}
     </div>
   );

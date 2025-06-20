@@ -1,35 +1,29 @@
 import React from 'react';
-import { BlockComponentProps, SocialBlockProps, TextAlignment } from '@/types/blocks';
+import { BlockComponentProps, SocialBlockProps } from '@/types/blocks';
 import Image from 'next/image';
 
 export const SocialBlock: React.FC<BlockComponentProps> = ({ 
   block,
-  isSelected = false
+  isSelected = false,
+  onClick
 }) => {
   const props = block.props as SocialBlockProps;
   const {
-    facebook,
-    twitter,
-    linkedin,
-    instagram,
-    youtube,
-    iconSize = '24px',
-    iconSpacing = '16px',
+    networks = [],
     iconColor = '#000000',
-    alignment = 'center'
+    iconSize = '24px',
+    align = 'center'
   } = props;
-
-  const networks = [
-    { key: 'facebook', url: facebook },
-    { key: 'twitter', url: twitter },
-    { key: 'linkedin', url: linkedin },
-    { key: 'instagram', url: instagram },
-    { key: 'youtube', url: youtube }
-  ].filter(network => network.url);
 
   if (networks.length === 0) {
     return (
-      <div className={`p-4 text-gray-500 text-sm ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''}`}>
+      <div 
+        onClick={onClick}
+        className={`
+          p-4 text-gray-500 text-sm cursor-pointer transition-all duration-200
+          ${isSelected ? 'ring-2 ring-blue-500' : 'hover:ring-2 hover:ring-blue-200'}
+        `}
+      >
         <div className="flex gap-4">
           <Image src="/icons/facebook.svg" alt="Facebook" width={24} height={24} className="opacity-30" />
           <Image src="/icons/twitter.svg" alt="Twitter" width={24} height={24} className="opacity-30" />
@@ -40,38 +34,46 @@ export const SocialBlock: React.FC<BlockComponentProps> = ({
     );
   }
 
-  const iconSizeNum = parseInt(iconSize as string);
+  const iconSizeNum = parseInt(iconSize);
 
   return (
     <div 
-      className={`p-4 ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''}`}
-      style={{ textAlign: alignment as TextAlignment }}
+      onClick={onClick}
+      className={`
+        relative p-4 cursor-pointer transition-all duration-200
+        ${isSelected ? 'ring-2 ring-blue-500' : 'hover:ring-2 hover:ring-blue-200'}
+      `}
+      style={{ textAlign: align as 'left' | 'center' | 'right' }}
     >
       <div style={{ display: 'inline-block' }}>
         {networks.map((network, index) => (
           <a 
-            key={network.key}
-            href={network.url as string}
+            key={network.type}
+            href={network.url}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(e) => e.preventDefault()}
             style={{
-              marginRight: index < networks.length - 1 ? iconSpacing as string : undefined,
+              marginRight: index < networks.length - 1 ? '16px' : undefined,
               display: 'inline-block',
               textDecoration: 'none',
             }}
           >
             <Image 
-              src={`/icons/${network.key}.svg`}
-              alt={network.key}
+              src={`/icons/${network.type}.svg`}
+              alt={network.type}
               width={iconSizeNum}
               height={iconSizeNum}
               style={{
-                filter: iconColor !== '#000000' ? getColorFilter(iconColor as string) : undefined,
+                filter: iconColor !== '#000000' ? getColorFilter(iconColor) : undefined,
               }}
             />
           </a>
         ))}
       </div>
+      {!isSelected && (
+        <div className="absolute inset-0 bg-blue-500/0 hover:bg-blue-500/5 transition-colors duration-200" />
+      )}
     </div>
   );
 };

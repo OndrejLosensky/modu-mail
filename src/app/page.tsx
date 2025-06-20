@@ -118,10 +118,10 @@ export default function Home() {
   // Don't render anything until client-side hydration is complete
   if (!isClient) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="text-center bg-white p-8 rounded-lg shadow-sm">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading email builder...</p>
+          <p className="text-gray-600 font-medium">Loading email builder...</p>
         </div>
       </div>
     );

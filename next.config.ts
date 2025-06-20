@@ -1,7 +1,11 @@
-import type { NextConfig } from "next";
+import { NextConfig } from 'next';
 
-const nextConfig: NextConfig = {
-  output: 'standalone'
+const config: NextConfig = {
+  reactStrictMode: true,
+  output: 'standalone',
+  images: {
+    domains: ['images.unsplash.com'],
+  },
 };
 
-export default nextConfig;
+export default config;

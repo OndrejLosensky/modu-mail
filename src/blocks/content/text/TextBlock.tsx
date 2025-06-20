@@ -4,18 +4,19 @@ import { BlockComponentProps, TextBlockProps, TextAlignment } from '@/types/bloc
 export const TextBlock: React.FC<BlockComponentProps> = ({ 
   block, 
   isSelected = false, 
-  onUpdate 
+  onUpdate,
+  onClick
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   
-  // Type assertion to get the specific text props
+  // Get the text props
   const props = block.props as TextBlockProps;
   const { 
-    content = 'New text block',
+    text,
     fontSize = '16px',
     color = '#1f2937',
     textAlign = 'left',
-    thickness = '400'
+    fontWeight = '400'
   } = props;
 
   const handleDoubleClick = () => {
@@ -27,11 +28,14 @@ export const TextBlock: React.FC<BlockComponentProps> = ({
   const handleBlur = (e: React.FocusEvent<HTMLDivElement>) => {
     setIsEditing(false);
     if (onUpdate) {
+      const newText = e.target.innerText;
+      if (!newText) return; // Don't update if empty
+
       onUpdate({
         ...block,
         props: {
-          ...block.props,
-          content: e.target.innerText || 'New text block'
+          ...props,
+          text: newText
         }
       });
     }
@@ -54,7 +58,7 @@ export const TextBlock: React.FC<BlockComponentProps> = ({
   };
 
   // Convert line breaks to <br> tags for display
-  const formattedContent = content.split('\n').map((line, i, arr) => (
+  const formattedText = (text || '').split('\n').map((line: string, i: number, arr: string[]) => (
     <React.Fragment key={i}>
       {line}
       {i < arr.length - 1 && <br />}
@@ -65,6 +69,7 @@ export const TextBlock: React.FC<BlockComponentProps> = ({
     <div 
       contentEditable={isEditing}
       onDoubleClick={handleDoubleClick}
+      onClick={onClick}
       onBlur={handleBlur}
       onKeyDown={handleKeyDown}
       suppressContentEditableWarning
@@ -72,17 +77,19 @@ export const TextBlock: React.FC<BlockComponentProps> = ({
         fontSize,
         color,
         textAlign: textAlign as TextAlignment,
-        fontWeight: thickness as string,
+        fontWeight,
         whiteSpace: 'pre-wrap',
         cursor: onUpdate ? 'text' : 'default'
       }}
       className={`
-        p-4 outline-none transition-all
-        ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''}
-        ${isEditing ? 'bg-blue-50/50' : ''}
+        relative p-4 cursor-pointer transition-all duration-200
+        ${isSelected ? 'ring-2 ring-blue-500' : 'hover:ring-2 hover:ring-blue-200'}
       `}
     >
-      {isEditing ? content : formattedContent}
+      {isEditing ? text : formattedText}
+      {!isSelected && (
+        <div className="absolute inset-0 bg-blue-500/0 hover:bg-blue-500/5 transition-colors duration-200" />
+      )}
     </div>
   );
 }; 

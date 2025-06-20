@@ -1,38 +1,38 @@
 import React from 'react';
-import { BlockComponentProps, DividerBlockProps, TextAlignment } from '@/types/blocks';
+import { BlockComponentProps, DividerBlockProps } from '@/types/blocks';
 
 export const DividerBlock: React.FC<BlockComponentProps> = ({ 
   block,
-  isSelected = false
+  isSelected = false,
+  onClick
 }) => {
-  // Type assertion to get the specific divider props
   const props = block.props as DividerBlockProps;
   const {
     color = '#e5e7eb',
-    height = '1px',
     width = '100%',
-    alignment = 'center'
+    style = 'solid',
+    spacing = '4px'
   } = props;
 
   return (
     <div
+      onClick={onClick}
       className={`
-        p-4
-        ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''}
+        relative p-4 cursor-pointer transition-all duration-200
+        ${isSelected ? 'ring-2 ring-blue-500' : 'hover:ring-2 hover:ring-blue-200'}
       `}
-      style={{
-        textAlign: alignment as TextAlignment,
-      }}
     >
-      <div
+      <hr
         style={{
-          margin: 0,
-          width: width as string,
-          height,
-          backgroundColor: color,
-          display: 'inline-block',
+          border: 'none',
+          borderTop: `${spacing} ${style} ${color}`,
+          width,
+          margin: '0 auto',
         }}
       />
+      {!isSelected && (
+        <div className="absolute inset-0 bg-blue-500/0 hover:bg-blue-500/5 transition-colors duration-200" />
+      )}
     </div>
   );
 }; 

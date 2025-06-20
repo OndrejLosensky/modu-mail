@@ -8,7 +8,6 @@ export const textConfig: BaseComponentConfig = {
   label: 'Text',
   description: 'A block for displaying and editing text content',
   defaultProps: {
-    text: 'New text block',
     fontSize: '16px',
     color: '#1f2937',
     textAlign: 'left',

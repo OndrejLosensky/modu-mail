@@ -13,38 +13,38 @@ export interface CommonBlockProps {
 }
 
 export interface TextBlockProps {
-  content: string;
-  fontSize?: string;
+  text: string;
+  content?: string;
   color?: string;
+  fontSize?: string;
+  fontWeight?: string;
   textAlign?: string;
   lineHeight?: string;
-  [key: string]: unknown;
 }
 
 export interface ButtonBlockProps {
   text: string;
-  href: string;
-  fontSize?: string;
-  color?: string;
+  url: string;
   backgroundColor?: string;
-  [key: string]: unknown;
+  textColor?: string;
+  borderRadius?: string;
+  width?: 'auto' | 'full';
+  align?: 'left' | 'center' | 'right';
 }
 
 export interface ImageBlockProps {
   src: string;
-  alt: string;
-  width: string;
-  height: string;
-  alignment?: TextAlignment;
-  borderRadius?: string;
-  link?: string;
-  [key: string]: unknown;
+  alt?: string;
+  width?: string;
+  height?: string;
+  align?: string;
 }
 
 export interface DividerBlockProps {
   color?: string;
-  height?: string;
-  [key: string]: unknown;
+  width?: string;
+  style?: string;
+  spacing?: string;
 }
 
 export interface ContainerBlockProps extends CommonBlockProps {
@@ -55,43 +55,26 @@ export interface ContainerBlockProps extends CommonBlockProps {
   [key: string]: unknown;
 }
 
-export interface ListBlockProps extends CommonBlockProps {
+export interface ListBlockProps {
   items: string[];
-  listType: ListType;
-  fontSize?: string;
+  type?: 'ordered' | 'unordered';
   color?: string;
-  textAlign?: TextAlignment;
-  bulletColor?: string;
-  spacing?: string;
-  [key: string]: unknown;
+  fontSize?: string;
+  lineHeight?: string;
 }
 
 export interface SpacerBlockProps {
   height: string;
-  [key: string]: unknown;
-}
-
-export interface SocialNetwork {
-  platform: string;
-  url: string;
-  [key: string]: unknown;
 }
 
 export interface SocialBlockProps {
-  networks: SocialNetwork[];
+  networks: {
+    type: string;
+    url: string;
+  }[];
+  iconColor?: string;
   iconSize?: string;
-  spacing?: string;
-  alignment?: string;
-  [key: string]: unknown;
-}
-
-export interface GroupBlockProps extends CommonBlockProps {
-  name?: string;
-  blocks: Block[];
-  backgroundColor?: string;
-  padding?: string;
-  borderRadius?: string;
-  [key: string]: unknown;
+  align?: string;
 }
 
 export type BlockProps = 
@@ -102,15 +85,13 @@ export type BlockProps =
   | ContainerBlockProps
   | ListBlockProps
   | SpacerBlockProps
-  | SocialBlockProps
-  | GroupBlockProps;
+  | SocialBlockProps;
 
-export interface Block<T = Record<string, unknown>> {
+export interface Block<T = TextBlockProps | ButtonBlockProps | ImageBlockProps | DividerBlockProps | SpacerBlockProps | SocialBlockProps | ListBlockProps> {
   id: string;
-  type: BlockType;
+  type: string;
   props: T;
   isDuplicate?: boolean;
-  groupId?: string;
 }
 
 export interface EmailTemplate {
@@ -122,6 +103,6 @@ export interface BlockComponentProps {
   block: Block;
   isSelected?: boolean;
   onUpdate?: (block: Block) => void;
-  onClick?: () => (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
   children?: React.ReactNode;
 } 

@@ -13,7 +13,27 @@ interface BlocksStore {
 
 export const useBlocksStore = create<BlocksStore>((set) => ({
   blocks: [],
-  setBlocks: (blocks) => set({ blocks }),
+  setBlocks: (blocks) => {
+    // Migrate any text blocks that use content to text
+    const migratedBlocks = blocks.map(block => {
+      if (block.type === 'text') {
+        const props = block.props as TextBlockProps & { content?: string };
+        if (props.content) {
+          return {
+            ...block,
+            props: {
+              ...props,
+              text: props.content,
+              content: undefined
+            }
+          };
+        }
+      }
+      return block;
+    });
+    
+    set({ blocks: migratedBlocks });
+  },
   deleteBlock: (blockId) => set((state) => ({
     blocks: state.blocks.filter((block) => block.id !== blockId)
   })),

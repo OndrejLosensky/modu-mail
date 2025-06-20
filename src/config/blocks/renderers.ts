@@ -13,15 +13,15 @@ export const blockConfigs: BlockConfigMap = {
     tag: 'p',
     styleGenerator: asBlockGenerator(textBlockStyles),
     innerContentGenerator: (block: Block<Record<string, unknown>>) => {
-      const props = block.props as TextBlockProps;
-      return props.content || 'New text block';
+      const props = block.props as unknown as TextBlockProps;
+      return props.text || '';
     },
   },
   button: {
     tag: 'a',
     styleGenerator: asBlockGenerator(buttonBlockStyles),
     attributeGenerator: asBlockGenerator((block: Block<ButtonBlockProps>) => ({
-      href: block.props.href || '#',
+      href: block.props.url || '#',
       target: '_blank',
       rel: 'noopener noreferrer',
     })),
@@ -53,12 +53,12 @@ export const blockConfigs: BlockConfigMap = {
       cellspacing: '0',
       border: '0',
       width: '100%',
-      align: block.props.textAlign || 'left',
+      align: 'left',
     })),
     innerContentGenerator: asBlockGenerator((block: Block<ListBlockProps>) => {
       const items = block.props.items || [];
       const filteredItems = items.filter((item: string) => item.trim());
-      const isOrdered = block.props.listType === 'ordered';
+      const isOrdered = block.props.type === 'ordered';
       
       const itemStyle = `
         color: ${block.props.color};
@@ -66,11 +66,11 @@ export const blockConfigs: BlockConfigMap = {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         margin: 0;
         padding: 0;
-        padding-bottom: ${block.props.spacing};
+        padding-bottom: 8px;
       `;
 
       const markerStyle = `
-        color: ${block.props.bulletColor};
+        color: ${block.props.color};
         display: inline-block;
         width: 20px;
         text-align: ${isOrdered ? 'right' : 'center'};
@@ -101,15 +101,15 @@ export const blockConfigs: BlockConfigMap = {
     innerContentGenerator: asBlockGenerator((block: Block<SocialBlockProps>) => {
       const networks = block.props.networks || [];
       return networks.map(network => {
-        const iconStyle = socialIconStyles(block.props.iconSize || '24px', block.props.spacing || '16px');
+        const iconStyle = socialIconStyles(block.props.iconSize || '24px', '16px');
         const iconStyleString = Object.entries(iconStyle)
           .map(([key, value]) => `${key}: ${value};`)
           .join(' ');
         return `
           <a href="${network.url}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
             <img 
-              src="/icons/${network.platform}.svg" 
-              alt="${network.platform}" 
+              src="/icons/${network.type}.svg" 
+              alt="${network.type}" 
               style="${iconStyleString}"
             />
           </a>
