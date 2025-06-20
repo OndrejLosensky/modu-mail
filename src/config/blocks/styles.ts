@@ -16,13 +16,13 @@ export const textBlockStyles: StyleGenerator<TextBlockProps> = (block: Block<Tex
 };
 
 export const buttonBlockStyles: StyleGenerator<ButtonBlockProps> = (block: Block<ButtonBlockProps>) => {
-  const { fontSize = '16px', color = '#ffffff', backgroundColor = '#3b82f6', textAlign = 'center' } = block.props as ButtonBlockProps & { textAlign?: string };
+  const { textColor: color = '#ffffff', backgroundColor = '#3b82f6', align: textAlign = 'center' } = block.props;
 
   return {
     display: 'inline-block',
     padding: '12px 24px',
     margin: '8px 0',
-    fontSize,
+    fontSize: '16px',
     color,
     backgroundColor,
     textAlign,
@@ -49,12 +49,12 @@ export const imageBlockStyles: StyleGenerator<ImageBlockProps> = (block: Block<I
 };
 
 export const dividerBlockStyles: StyleGenerator<DividerBlockProps> = (block: Block<DividerBlockProps>) => {
-  const { color = '#e5e7eb', height = '1px' } = block.props;
+  const { color = '#e5e7eb', spacing = '1px' } = block.props;
 
   return {
     display: 'block',
     width: '100%',
-    height,
+    height: spacing,
     margin: '16px 0',
     backgroundColor: color,
     border: 'none',
@@ -62,15 +62,15 @@ export const dividerBlockStyles: StyleGenerator<DividerBlockProps> = (block: Blo
 };
 
 export const listBlockStyles: StyleGenerator<ListBlockProps> = (block: Block<ListBlockProps>) => {
-  const { fontSize = '16px', color = '#1f2937', textAlign = 'left', spacing = '0.5em' } = block.props;
+  const { fontSize = '16px', color = '#1f2937' } = block.props;
   
   return {
     fontSize,
     color,
-    textAlign,
+    textAlign: 'left',
     margin: '0',
     padding: '0',
-    lineHeight: `calc(1.5 + ${spacing})`,
+    lineHeight: '1.5',
   };
 };
 

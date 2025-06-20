@@ -1,19 +1,7 @@
 import { ComponentBuilder } from '../ComponentBuilder';
 import { ComponentCategory } from './ComponentCategories';
 import { PropertyCategory } from '@/types/editor';
-import { TextAlignment } from '@/types/blocks';
-
-interface SocialBlockProps {
-  facebook?: string;
-  twitter?: string;
-  linkedin?: string;
-  instagram?: string;
-  youtube?: string;
-  iconSize: string;
-  iconSpacing: string;
-  iconColor: string;
-  alignment: TextAlignment;
-}
+import { SocialBlockProps } from '@/types/blocks';
 
 const { component, html } = new ComponentBuilder<SocialBlockProps>('social')
   .setName('Social Links')
@@ -63,7 +51,7 @@ const { component, html } = new ComponentBuilder<SocialBlockProps>('social')
     defaultValue: '24px',
   })
   .addProperty({
-    key: 'iconSpacing',
+    key: 'spacing',
     type: 'size',
     label: 'Icon Spacing',
     category: PropertyCategory.Layout,
@@ -90,37 +78,41 @@ const { component, html } = new ComponentBuilder<SocialBlockProps>('social')
   })
   .setHtmlTag('table')
   .setAttributeGenerator((block) => {
-    const props = block.props as unknown as SocialBlockProps;
+    const props = block.props as Record<string, string>;
     return {
       role: 'presentation',
       cellpadding: '0',
       cellspacing: '0',
       border: '0',
       width: '100%',
-      align: props.alignment,
+      align: props.alignment || 'center',
     };
   })
   .setInnerContentGenerator((block) => {
-    const props = block.props as unknown as SocialBlockProps;
+    const props = block.props as Record<string, string>;
     const networks = ['facebook', 'twitter', 'linkedin', 'instagram', 'youtube'];
-    const activeNetworks = networks.filter(network => props[network as keyof SocialBlockProps]);
+    const validNetworks = networks.filter(network => props[network] && props[network].trim() !== '');
     
-    if (activeNetworks.length === 0) return '';
+    if (validNetworks.length === 0) return '';
+
+    // Get the base URL for icons - in preview we need to use absolute path
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
 
     return `
       <tr>
-        <td align="${props.alignment}">
+        <td align="${props.alignment || 'center'}">
           <table role="presentation" cellpadding="0" cellspacing="0" border="0">
             <tr>
-              ${activeNetworks.map((network, index) => `
-                <td ${index < activeNetworks.length - 1 ? `style="padding-right: ${props.iconSpacing};"` : ''}>
-                  <a href="${props[network as keyof SocialBlockProps]}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+              ${validNetworks.map((network, index) => `
+                <td ${index < validNetworks.length - 1 ? `style="padding-right: ${props.spacing || '16px'};"` : ''}>
+                  <a href="${props[network]}" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
                     <img 
-                      src="${process.env.NEXT_PUBLIC_BASE_URL || ''}/icons/${network}.svg" 
-                      alt="${network}" 
-                      width="${props.iconSize}" 
-                      height="${props.iconSize}"
+                      src="${baseUrl}/icons/${network}.svg" 
+                      alt="" 
+                      width="${props.iconSize || '24px'}" 
+                      height="${props.iconSize || '24px'}"
                       style="display: block; border: 0; ${props.iconColor !== '#000000' ? `filter: ${getColorFilter(props.iconColor)};` : ''}"
+                      aria-hidden="true"
                     />
                   </a>
                 </td>

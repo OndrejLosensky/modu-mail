@@ -1,12 +1,19 @@
 import React from 'react';
-import { BlockComponentProps, ListBlockProps } from '@/types/blocks';
+import { BlockComponentProps } from '@/types/blocks';
 
 export const ListBlock: React.FC<BlockComponentProps> = ({ 
   block,
   isSelected = false,
   onClick
 }) => {
-  const props = block.props as ListBlockProps;
+  const props = block.props as unknown as { 
+    items: string[] | string;
+    type?: 'ordered' | 'unordered';
+    color?: string;
+    fontSize?: string;
+    lineHeight?: string;
+  };
+
   const {
     items = [],
     type = 'unordered',
@@ -14,6 +21,11 @@ export const ListBlock: React.FC<BlockComponentProps> = ({
     fontSize = '16px',
     lineHeight = '1.5'
   } = props;
+
+  // Parse items if they're provided as a string
+  const parsedItems: string[] = typeof items === 'string' 
+    ? items.split(/\n|,/).map((item: string) => item.trim()).filter(Boolean)
+    : Array.isArray(items) ? items : [];
 
   const ListTag = type === 'ordered' ? 'ol' : 'ul';
 
@@ -34,7 +46,7 @@ export const ListBlock: React.FC<BlockComponentProps> = ({
           paddingLeft: '1.5em',
         }}
       >
-        {items.map((item, index) => (
+        {parsedItems.map((item: string, index: number) => (
           <li key={index}>{item}</li>
         ))}
       </ListTag>

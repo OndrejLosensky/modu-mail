@@ -2,13 +2,14 @@ import React from 'react';
 import { BlockComponentProps, SocialBlockProps as ISocialBlockProps } from '@/types/blocks';
 import { BaseComponentConfig } from '@/lib/components/configs/BaseComponentConfig';
 import { ComponentCategory } from '@/lib/components/configs/ComponentCategories';
+import Image from 'next/image';
 
-const socialIcons = {
-  facebook: '📘',
-  twitter: '🐦',
-  linkedin: '💼',
-  instagram: '📸',
-  youtube: '🎥',
+const PLATFORM_ICONS: Record<string, string> = {
+  facebook: 'facebook',
+  twitter: 'twitter',
+  linkedin: 'linkedin',
+  instagram: 'instagram',
+  youtube: 'youtube'
 };
 
 export const SocialBlock: React.FC<BlockComponentProps> = ({ block, isSelected }) => {
@@ -17,8 +18,18 @@ export const SocialBlock: React.FC<BlockComponentProps> = ({ block, isSelected }
     networks = [], 
     iconSize = '24px',
     spacing = '16px',
-    alignment = 'center'
+    alignment = 'center',
+    iconColor = '#000000'
   } = props;
+
+  // Filter out networks without URLs
+  const validNetworks = networks.filter(network => network.url && network.url.trim() !== '');
+  
+  if (validNetworks.length === 0) {
+    return null;
+  }
+  
+  const iconSizeNum = parseInt(iconSize);
   
   return (
     <div 
@@ -31,22 +42,44 @@ export const SocialBlock: React.FC<BlockComponentProps> = ({ block, isSelected }
           gap: spacing 
         }}
       >
-        {networks.map((network, index) => (
-          <a
-            key={index}
-            href={network.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:opacity-80 transition-opacity"
-            style={{ fontSize: iconSize }}
-          >
-            {socialIcons[network.platform as keyof typeof socialIcons] || '🔗'}
-          </a>
-        ))}
+        {validNetworks.map((network, index) => {
+          const platform = network.platform?.toLowerCase() || 'social';
+          const iconName = PLATFORM_ICONS[platform] || platform;
+          
+          return (
+            <a
+              key={`${platform}-${index}`}
+              href={network.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block hover:opacity-80 transition-opacity"
+            >
+              <Image 
+                src={`/icons/${iconName}.svg`}
+                alt=""
+                width={iconSizeNum}
+                height={iconSizeNum}
+                style={{
+                  filter: iconColor !== '#000000' ? getColorFilter(iconColor) : undefined,
+                }}
+                aria-hidden="true"
+              />
+            </a>
+          );
+        })}
       </div>
     </div>
   );
 };
+
+function getColorFilter(hexColor: string): string {
+  // Convert hex to RGB
+  const r = parseInt(hexColor.slice(1, 3), 16) / 255;
+  const g = parseInt(hexColor.slice(3, 5), 16) / 255;
+  const b = parseInt(hexColor.slice(5, 7), 16) / 255;
+
+  return `brightness(0) saturate(100%) invert(${Math.round(r * 100)}%) sepia(${Math.round(g * 100)}%) saturate(${Math.round(b * 100)}%)`;
+}
 
 export const socialConfig: BaseComponentConfig = {
   id: 'social',
@@ -63,7 +96,8 @@ export const socialConfig: BaseComponentConfig = {
     ],
     iconSize: '24px',
     spacing: '16px',
-    alignment: 'center'
+    alignment: 'center',
+    iconColor: '#000000'
   },
   validation: {
     required: ['networks'],

@@ -18,7 +18,7 @@ export const exportToHTML = (blocks: Block[], options: HTMLExportOptions = {}): 
   } = options;
 
   // Convert blocks to HTML
-  let html = blocks.map(renderBlock).join(minify ? '' : '\n');
+  let html = blocks.map(block => renderBlock(block as Block<Record<string, unknown>>)).join(minify ? '' : '\n');
 
   // Wrap with container if needed
   if (wrapWithContainer) {

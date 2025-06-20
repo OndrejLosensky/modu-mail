@@ -17,16 +17,16 @@ import { EmailCanvas } from '@/components/canvas/EmailCanvas';
 import { DragOverlay } from '@/components/DragOverlay';
 import { EditorLayout } from '@/components/layout/EditorLayout';
 import { PropertiesPanel } from '@/components/properties/PropertiesPanel';
-import { Block, BlockType, TextBlockProps, ButtonBlockProps, ImageBlockProps, DividerBlockProps, SpacerBlockProps, SocialBlockProps } from '@/types/blocks';
+import { Block, BlockType, TextBlockProps, ButtonBlockProps, ImageBlockProps, DividerBlockProps, ListBlockProps, SpacerBlockProps, SocialBlockProps } from '@/types/blocks';
 import { initializeBlocks } from '@/blocks/init';
 import { components } from '@/config/components';
 import { useBlocksStore } from '@/lib/store/blocks';
 
-type BlockProps = TextBlockProps | ButtonBlockProps | ImageBlockProps | DividerBlockProps | SpacerBlockProps | SocialBlockProps;
+type EditableBlockProps = TextBlockProps | ButtonBlockProps | ImageBlockProps | DividerBlockProps | ListBlockProps | SpacerBlockProps | SocialBlockProps;
 
 export default function Home() {
-  const [activeBlock, setActiveBlock] = useState<Block<BlockProps> | null>(null);
-  const [selectedBlock, setSelectedBlock] = useState<Block<BlockProps> | null>(null);
+  const [activeBlock, setActiveBlock] = useState<Block<EditableBlockProps> | null>(null);
+  const [selectedBlock, setSelectedBlock] = useState<Block<EditableBlockProps> | null>(null);
   const [draggedComponent, setDraggedComponent] = useState<{ type: string; icon: string; label: string; } | null>(null);
   const [isClient, setIsClient] = useState(false);
 
@@ -41,9 +41,9 @@ export default function Home() {
     initializeBlocks();
   }, []);
 
-  const getDefaultProps = (type: BlockType) => {
+  const getDefaultProps = (type: BlockType): EditableBlockProps => {
     const component = components.find(c => c.type === type);
-    return component ? component.defaultProps : {};
+    return component ? component.defaultProps as EditableBlockProps : {} as EditableBlockProps;
   };
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -89,7 +89,7 @@ export default function Home() {
     // Create the new block only when dropping
     if (over && active.data.current?.type) {
       const type = active.data.current.type as BlockType;
-      const newBlock: Block<BlockProps> = {
+      const newBlock: Block<EditableBlockProps> = {
         id: `${type}-${Date.now()}`,
         type,
         props: getDefaultProps(type)
@@ -102,7 +102,7 @@ export default function Home() {
     setDraggedComponent(null);
   };
 
-  const handleBlockUpdate = (updatedBlock: Block<BlockProps>) => {
+  const handleBlockUpdate = (updatedBlock: Block<EditableBlockProps>) => {
     setBlocks(
       blocks.map((block) =>
         block.id === updatedBlock.id ? updatedBlock : block
@@ -111,7 +111,7 @@ export default function Home() {
     setSelectedBlock(updatedBlock);
   };
 
-  const handleSelectBlock = (block: Block<BlockProps>) => {
+  const handleSelectBlock = (block: Block<EditableBlockProps> | null) => {
     setSelectedBlock(block);
   };
 

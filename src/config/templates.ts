@@ -23,9 +23,7 @@ export const templates: Template[] = [
           fontSize: '24px',
           color: '#000000',
           textAlign: 'center',
-          fontWeight: '600',
-          paddingTop: '48px',
-          paddingBottom: '48px'
+          fontWeight: '600'
         }
       },
       {
@@ -37,8 +35,7 @@ export const templates: Template[] = [
           color: '#000000',
           textAlign: 'center',
           fontWeight: '700',
-          lineHeight: '1.2',
-          paddingBottom: '16px'
+          lineHeight: '1.2'
         }
       },
       {
@@ -49,8 +46,7 @@ export const templates: Template[] = [
           fontSize: '18px',
           color: '#666666',
           textAlign: 'center',
-          lineHeight: '1.6',
-          paddingBottom: '32px'
+          lineHeight: '1.6'
         }
       },
       {
@@ -58,15 +54,11 @@ export const templates: Template[] = [
         type: 'button',
         props: {
           text: 'Get Started →',
-          href: '#',
+          url: '#',
           backgroundColor: '#000000',
-          color: '#ffffff',
+          textColor: '#ffffff',
           borderRadius: '32px',
-          paddingX: '32px',
-          paddingY: '16px',
-          fontSize: '16px',
-          fontWeight: '500',
-          alignment: 'center'
+          align: 'center'
         }
       },
       {
@@ -85,12 +77,9 @@ export const templates: Template[] = [
             'Personalized onboarding session',
             '24/7 priority support'
           ],
-          listType: 'unordered',
+          type: 'unordered',
           fontSize: '16px',
-          color: '#666666',
-          bulletColor: '#000000',
-          spacing: '16px',
-          textAlign: 'center'
+          color: '#666666'
         }
       }
     ]
@@ -108,8 +97,7 @@ export const templates: Template[] = [
           src: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800',
           alt: 'Team collaboration',
           width: '100%',
-          height: 'auto',
-          borderRadius: '16px'
+          height: 'auto'
         }
       },
       {
@@ -126,10 +114,7 @@ export const templates: Template[] = [
           text: 'April 2024',
           fontSize: '14px',
           color: '#666666',
-          textAlign: 'left',
-          letterSpacing: '1.5px',
-          textTransform: 'uppercase',
-          paddingBottom: '16px'
+          textAlign: 'left'
         }
       },
       {
@@ -141,8 +126,7 @@ export const templates: Template[] = [
           color: '#000000',
           textAlign: 'left',
           fontWeight: '700',
-          lineHeight: '1.2',
-          paddingBottom: '24px'
+          lineHeight: '1.2'
         }
       },
       {
@@ -153,8 +137,7 @@ export const templates: Template[] = [
           fontSize: '18px',
           color: '#666666',
           textAlign: 'left',
-          lineHeight: '1.6',
-          paddingBottom: '32px'
+          lineHeight: '1.6'
         }
       },
       {
@@ -162,15 +145,11 @@ export const templates: Template[] = [
         type: 'button',
         props: {
           text: 'Read the full story',
-          href: '#',
+          url: '#',
           backgroundColor: '#000000',
-          color: '#ffffff',
+          textColor: '#ffffff',
           borderRadius: '32px',
-          paddingX: '32px',
-          paddingY: '16px',
-          fontSize: '16px',
-          fontWeight: '500',
-          alignment: 'left'
+          align: 'left'
         }
       },
       {
@@ -178,8 +157,7 @@ export const templates: Template[] = [
         type: 'divider',
         props: {
           color: '#eeeeee',
-          height: '1px',
-          margin: '48px 0'
+          spacing: '1px'
         }
       },
       {

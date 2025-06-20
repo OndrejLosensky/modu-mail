@@ -61,7 +61,7 @@ const { component, html } = new ComponentBuilder<DividerBlockProps>('divider')
     cellspacing: '0',
     border: '0',
     width: '100%',
-    align: block.props.alignment,
+    align: String(block.props.alignment || 'center'),
   }))
   .setInnerContentGenerator((block) => {
     const props = block.props as unknown as DividerBlockProps;

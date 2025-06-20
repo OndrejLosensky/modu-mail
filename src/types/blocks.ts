@@ -67,14 +67,17 @@ export interface SpacerBlockProps {
   height: string;
 }
 
+export interface SocialNetwork {
+  platform: string;
+  url: string;
+}
+
 export interface SocialBlockProps {
-  networks: {
-    type: string;
-    url: string;
-  }[];
-  iconColor?: string;
+  networks: SocialNetwork[];
   iconSize?: string;
-  align?: string;
+  spacing?: string;
+  alignment?: 'left' | 'center' | 'right';
+  iconColor?: string;
 }
 
 export type BlockProps = 

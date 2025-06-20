@@ -23,7 +23,7 @@ export const PropertyRenderer: React.FC<PropertyRendererProps> = ({ block, onUpd
   };
 
   const renderProperty = (property: PropertyConfig) => {
-    const value = block.props[property.key] ?? property.defaultValue;
+    const value = (block.props as Record<string, PropertyValue>)[property.key] ?? property.defaultValue;
 
     switch (property.type) {
       case 'text':
