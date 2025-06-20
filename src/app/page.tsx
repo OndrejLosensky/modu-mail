@@ -21,6 +21,8 @@ import { Block, BlockType, TextBlockProps, ButtonBlockProps, ImageBlockProps, Di
 import { initializeBlocks } from '@/blocks/init';
 import { components } from '@/config/components';
 import { useBlocksStore } from '@/lib/store/blocks';
+import { useSearchParams } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 
 type EditableBlockProps = TextBlockProps | ButtonBlockProps | ImageBlockProps | DividerBlockProps | ListBlockProps | SpacerBlockProps | SocialBlockProps;
 
@@ -29,8 +31,12 @@ export default function Home() {
   const [selectedBlock, setSelectedBlock] = useState<Block<EditableBlockProps> | null>(null);
   const [draggedComponent, setDraggedComponent] = useState<{ type: string; icon: string; label: string; } | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { blocks, setBlocks } = useBlocksStore();
+  const searchParams = useSearchParams();
+  const templateId = searchParams.get('template');
+  const supabase = createClient();
 
   const mouseSensor = useSensor(MouseSensor);
   const touchSensor = useSensor(TouchSensor);
@@ -38,8 +44,41 @@ export default function Home() {
 
   useEffect(() => {
     setIsClient(true);
+    // Always initialize blocks first
     initializeBlocks();
-  }, []);
+    if (!templateId) {
+      setIsLoading(false);
+    }
+  }, [templateId]);
+
+  // Load template content if editing
+  useEffect(() => {
+    const loadTemplate = async () => {
+      if (!templateId) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('templates')
+          .select('content')
+          .eq('id', templateId)
+          .single();
+
+        if (error) throw error;
+        if (data) {
+          console.log('Loading template content:', data.content);
+          setBlocks(data.content);
+        }
+      } catch (error) {
+        console.error('Error loading template:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (templateId) {
+      loadTemplate();
+    }
+  }, [templateId, supabase, setBlocks]);
 
   const getDefaultProps = (type: BlockType): EditableBlockProps => {
     const component = components.find(c => c.type === type);
@@ -94,6 +133,7 @@ export default function Home() {
         type,
         props: getDefaultProps(type)
       };
+      console.log('Adding new block:', newBlock);
       setBlocks([...blocks, newBlock]);
       setSelectedBlock(newBlock);
     }
@@ -103,11 +143,12 @@ export default function Home() {
   };
 
   const handleBlockUpdate = (updatedBlock: Block<EditableBlockProps>) => {
-    setBlocks(
-      blocks.map((block) =>
-        block.id === updatedBlock.id ? updatedBlock : block
-      )
+    console.log('Updating block:', updatedBlock);
+    const updatedBlocks = blocks.map((block) =>
+      block.id === updatedBlock.id ? updatedBlock : block
     );
+    console.log('New blocks state:', updatedBlocks);
+    setBlocks(updatedBlocks);
     setSelectedBlock(updatedBlock);
   };
 
@@ -116,7 +157,7 @@ export default function Home() {
   };
 
   // Don't render anything until client-side hydration is complete
-  if (!isClient) {
+  if (!isClient || isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center bg-white p-8 rounded-lg shadow-sm">

@@ -27,23 +27,28 @@ export function initializeBlocks() {
 
   try {
     // Register layout blocks
+    console.log('Registering layout blocks...');
     blockManager.registerBlock('container', Container, containerConfig);
 
     // Register content blocks
+    console.log('Registering content blocks...');
     blockManager.registerBlock('text', TextBlock, textConfig);
     blockManager.registerBlock('divider', DividerBlock, dividerConfig);
     blockManager.registerBlock('list', ListBlock, listConfig);
     blockManager.registerBlock('spacer', SpacerBlock, spacerConfig);
 
     // Register interactive blocks
+    console.log('Registering interactive blocks...');
     blockManager.registerBlock('button', ButtonBlock, buttonConfig);
     blockManager.registerBlock('social', SocialBlock, socialConfig);
 
     // Register media blocks
+    console.log('Registering media blocks...');
     blockManager.registerBlock('image', ImageBlock, imageConfig);
 
     blockManager.setInitialized(true);
     console.log('Blocks initialized successfully');
+    console.log('Registered blocks:', blockManager.getAllBlocks());
   } catch (error) {
     console.error('Error initializing blocks:', error);
   }

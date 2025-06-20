@@ -11,9 +11,15 @@ interface BlocksStore {
   duplicateBlock: (blockId: string) => string | null;
 }
 
-export const useBlocksStore = create<BlocksStore>((set) => ({
+export const useBlocksStore = create<BlocksStore>((set, get) => ({
   blocks: [],
   setBlocks: (blocks) => {
+    console.log('Setting blocks in store:', blocks);
+    
+    if (!blocks || blocks.length === 0) {
+      console.log('Warning: Attempting to set empty blocks array');
+    }
+    
     // Migrate any text blocks that use content to text
     const migratedBlocks = blocks.map(block => {
       if (block.type === 'text') {
@@ -32,17 +38,28 @@ export const useBlocksStore = create<BlocksStore>((set) => ({
       return block;
     });
     
+    console.log('Setting migrated blocks:', migratedBlocks);
     set({ blocks: migratedBlocks });
+    
+    // Log the current state after update
+    const currentState = get().blocks;
+    console.log('Current blocks state after update:', currentState);
   },
-  deleteBlock: (blockId) => set((state) => ({
-    blocks: state.blocks.filter((block) => block.id !== blockId)
-  })),
+  deleteBlock: (blockId) => {
+    console.log('Deleting block:', blockId);
+    set((state) => ({
+      blocks: state.blocks.filter((block) => block.id !== blockId)
+    }));
+  },
   duplicateBlock: (blockId) => {
     let newBlockId: string | null = null;
     
     set((state) => {
       const blockToDuplicate = state.blocks.find((block) => block.id === blockId);
-      if (!blockToDuplicate) return state;
+      if (!blockToDuplicate) {
+        console.log('Block to duplicate not found:', blockId);
+        return state;
+      }
 
       newBlockId = uuidv4();
       const duplicatedBlock = {
@@ -51,13 +68,11 @@ export const useBlocksStore = create<BlocksStore>((set) => ({
         isDuplicate: true, // Add flag to identify duplicates
       };
 
-      const blockIndex = state.blocks.findIndex((block) => block.id === blockId);
-      const newBlocks = [...state.blocks];
-      newBlocks.splice(blockIndex + 1, 0, duplicatedBlock);
-
-      return { blocks: newBlocks };
+      return {
+        blocks: [...state.blocks, duplicatedBlock]
+      };
     });
-
+    
     return newBlockId;
-  },
+  }
 })); 
