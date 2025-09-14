@@ -8,13 +8,12 @@ import { useBlocksStore } from '@/lib/store/blocks';
 import { createClient } from '@/lib/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { SaveTemplateDialog } from '../SaveTemplateDialog';
+import { PreviewDialog } from '../PreviewDialog';
 import { Database } from '@/types/supabase';
 
-interface NavigationProps {
-  onNewTemplate?: () => void;
-}
+interface NavigationProps {}
 
-function NavigationContent({ onNewTemplate }: NavigationProps) {
+function NavigationContent({}: NavigationProps) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -22,13 +21,14 @@ function NavigationContent({ onNewTemplate }: NavigationProps) {
   
   const [isSaving, setIsSaving] = useState(false);
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [currentTemplate, setCurrentTemplate] = useState<Database['public']['Tables']['templates']['Row'] | null>(null);
   const supabase = createClient();
   const [user, setUser] = useState<User | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  const { blocks } = useBlocksStore();
+  const { blocks, setBlocks } = useBlocksStore();
 
   useEffect(() => {
     setMounted(true);
@@ -80,6 +80,12 @@ function NavigationContent({ onNewTemplate }: NavigationProps) {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     setIsDropdownOpen(false);
+  };
+
+  const handleNewTemplate = () => {
+    setBlocks([]);
+    setCurrentTemplate(null);
+    router.push('/');
   };
 
   const handleExportHTML = () => {
@@ -223,13 +229,24 @@ function NavigationContent({ onNewTemplate }: NavigationProps) {
           {pathname === '/' && (
             <>
               <button
-                onClick={onNewTemplate}
+                onClick={handleNewTemplate}
                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m-8-8h16" />
                 </svg>
                 <span>New</span>
+              </button>
+
+              <button
+                onClick={() => setIsPreviewOpen(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <span>Preview</span>
               </button>
 
               <button
@@ -300,11 +317,17 @@ function NavigationContent({ onNewTemplate }: NavigationProps) {
         defaultName={currentTemplate?.name || ''}
         defaultDescription={currentTemplate?.description || ''}
       />
+
+      <PreviewDialog
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        blocks={blocks}
+      />
     </>
   );
 }
 
-export const Navigation: React.FC<NavigationProps> = (props) => {
+export const Navigation: React.FC<NavigationProps> = () => {
   return (
     <Suspense fallback={
       <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -314,7 +337,7 @@ export const Navigation: React.FC<NavigationProps> = (props) => {
         </div>
       </nav>
     }>
-      <NavigationContent {...props} />
+      <NavigationContent />
     </Suspense>
   );
 };

@@ -55,7 +55,7 @@ function TemplateCard({ template, onUse }: { template: EmailTemplate; onUse: () 
                           className="text-sm leading-relaxed"
                           style={{
                             color: props.color || '#374151',
-                            textAlign: props.textAlign || 'left',
+                            textAlign: 'left',
                             fontWeight: props.fontWeight || 'normal',
                           }}
                         >
@@ -68,10 +68,7 @@ function TemplateCard({ template, onUse }: { template: EmailTemplate; onUse: () 
                       return (
                         <div
                           key={block.id}
-                          className="flex"
-                          style={{
-                            justifyContent: props.align === 'center' ? 'center' : props.align === 'right' ? 'flex-end' : 'flex-start',
-                          }}
+                          className="flex justify-start"
                         >
                           <div
                             className="px-4 py-2 text-sm font-medium rounded-md"
@@ -91,10 +88,7 @@ function TemplateCard({ template, onUse }: { template: EmailTemplate; onUse: () 
                       return (
                         <div
                           key={block.id}
-                          className="flex"
-                          style={{
-                            justifyContent: props.align === 'center' ? 'center' : props.align === 'right' ? 'flex-end' : 'flex-start',
-                          }}
+                          className="flex justify-start"
                         >
                           <div
                             className="bg-gray-100 rounded-md flex items-center justify-center text-gray-500 text-xs"
@@ -146,10 +140,26 @@ function TemplateCard({ template, onUse }: { template: EmailTemplate; onUse: () 
           </div>
         </div>
         
-        {/* Category badge */}
+        {/* Component types badge */}
         <div className="absolute bottom-2 left-2">
           <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/95 backdrop-blur-sm text-gray-800 shadow-sm">
-            {template.category}
+            {(() => {
+              const componentTypeLabels: Record<string, string> = {
+                'text': 'Text',
+                'button': 'Button', 
+                'image': 'Image',
+                'divider': 'Divider',
+                'spacer': 'Spacer',
+                'social': 'Social',
+                'list': 'List',
+                'container': 'Container',
+                'group': 'Group',
+                'columns': 'Columns'
+              };
+              const uniqueTypes = Array.from(new Set(template.blocks.map(block => block.type)));
+              const labels = uniqueTypes.slice(0, 2).map(type => componentTypeLabels[type] || type);
+              return labels.join(', ') + (uniqueTypes.length > 2 ? '+' : '');
+            })()}
           </span>
         </div>
       </div>
@@ -157,7 +167,7 @@ function TemplateCard({ template, onUse }: { template: EmailTemplate; onUse: () 
       <div className="p-4">
         <div className="mb-3">
           <h3 className="text-lg font-bold text-gray-900 mb-1">{template.name}</h3>
-          <p className="text-sm text-gray-600 leading-relaxed">{template.description}</p>
+          <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">{template.description}</p>
         </div>
         
         <button

@@ -100,12 +100,14 @@ export default function MyTemplatesPage() {
             <p className="text-base text-gray-600 max-w-xl mx-auto mb-6">
               Manage and organize your saved email templates
             </p>
-            <Link
-              href="/"
-              className="inline-flex items-center px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl"
-            >
-              Create Template
-            </Link>
+            {templates.length > 0 && (
+              <Link
+                href="/"
+                className="inline-flex items-center px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                Create Template
+              </Link>
+            )}
           </div>
 
           {isLoading ? (
@@ -158,7 +160,7 @@ export default function MyTemplatesPage() {
                                       className="text-sm leading-relaxed"
                                       style={{
                                         color: props.color || '#374151',
-                                        textAlign: props.textAlign || 'left',
+                                        textAlign: 'left',
                                         fontWeight: props.fontWeight || 'normal',
                                       }}
                                     >
@@ -171,10 +173,7 @@ export default function MyTemplatesPage() {
                                   return (
                                     <div
                                       key={block.id}
-                                      className="flex"
-                                      style={{
-                                        justifyContent: props.align === 'center' ? 'center' : props.align === 'right' ? 'flex-end' : 'flex-start',
-                                      }}
+                                      className="flex justify-start"
                                     >
                                       <div
                                         className="px-4 py-2 text-sm font-medium rounded-md"
@@ -194,10 +193,7 @@ export default function MyTemplatesPage() {
                                   return (
                                     <div
                                       key={block.id}
-                                      className="flex"
-                                      style={{
-                                        justifyContent: props.align === 'center' ? 'center' : props.align === 'right' ? 'flex-end' : 'flex-start',
-                                      }}
+                                      className="flex justify-start"
                                     >
                                       <div
                                         className="bg-gray-100 rounded-md flex items-center justify-center text-gray-500 text-xs"
@@ -249,26 +245,41 @@ export default function MyTemplatesPage() {
                       </div>
                     </div>
                     
-                    {/* Status badge */}
+                    {/* Component types badge */}
                     <div className="absolute bottom-2 left-2">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium bg-white/95 backdrop-blur-sm shadow-sm ${
-                        template.is_public ? 'text-green-700' : 'text-gray-800'
-                      }`}>
-                        {template.is_public ? 'Public' : 'Private'}
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/95 backdrop-blur-sm text-gray-800 shadow-sm">
+                        {(() => {
+                          const componentTypeLabels: Record<string, string> = {
+                            'text': 'Text',
+                            'button': 'Button', 
+                            'image': 'Image',
+                            'divider': 'Divider',
+                            'spacer': 'Spacer',
+                            'social': 'Social',
+                            'list': 'List',
+                            'container': 'Container',
+                            'group': 'Group',
+                            'columns': 'Columns'
+                          };
+                          const blocks = template.content as Block[];
+                          const uniqueTypes = Array.from(new Set(blocks.map(block => block.type)));
+                          const labels = uniqueTypes.slice(0, 2).map(type => componentTypeLabels[type] || type);
+                          return labels.join(', ') + (uniqueTypes.length > 2 ? '+' : '');
+                        })()}
                       </span>
                     </div>
                   </div>
                   
                   <div className="p-4">
-                    <div className="mb-3">
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">{template.name}</h3>
-                      <p className="text-xs text-gray-500 mb-2">
-                        Last modified {new Date(template.updated_at).toLocaleDateString()}
-                      </p>
-                      <p className="text-sm text-gray-600 leading-relaxed">
-                        {template.description || 'No description provided'}
-                      </p>
-                    </div>
+                <div className="mb-3">
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">{template.name}</h3>
+                  <p className="text-xs text-gray-500 mb-2">
+                    Last modified {new Date(template.updated_at).toLocaleDateString()}
+                  </p>
+                  <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
+                    {template.description || 'No description provided'}
+                  </p>
+                </div>
                     
                     <div className="flex items-center gap-2">
                       <button

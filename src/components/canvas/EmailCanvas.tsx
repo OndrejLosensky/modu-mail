@@ -58,8 +58,8 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
   };
 
   return (
-    <div className={`flex-1 bg-gray-100 p-8 h-full overflow-auto ${isPreview ? 'bg-gray-900' : ''}`}>
-      <div className="max-w-2xl mx-auto">
+    <div className={`flex-1 bg-gray-100 p-4 h-full overflow-auto ${isPreview ? 'bg-gray-900' : ''}`}>
+      <div className="max-w-xl mx-auto">
         {!isPreview && (
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-xl font-semibold text-gray-900">Email Canvas</h1>
@@ -73,16 +73,16 @@ export const EmailCanvas: React.FC<EmailCanvasProps> = ({
 
         <div className={`bg-white rounded-lg shadow-sm ${isPreview ? 'max-w-xl mx-auto' : ''}`}>
           {!isPreview && (
-            <div className="px-8 py-4 border-b border-gray-100">
+            <div className="px-6 py-3 border-b border-gray-100">
               <div className="w-32 h-2 bg-gray-100 rounded-full" />
             </div>
           )}
 
-          <div className={`${isPreview ? 'p-4' : 'p-8'}`}>
+          <div className={`${isPreview ? 'p-4' : 'p-6'}`}>
             <div 
               ref={setNodeRef}
               className={`
-                min-h-[400px] rounded-lg p-4 transition-all duration-200
+                min-h-[200px] rounded-lg p-3 transition-all duration-200
                 ${isDragging ? 'border-2 border-dashed' : isPreview ? '' : 'border'}
                 ${isOver 
                   ? 'border-blue-500 bg-blue-50/50' 
