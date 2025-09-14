@@ -7,7 +7,7 @@ interface EditorLayoutProps {
 export const EditorLayout: React.FC<EditorLayoutProps> = ({ children }) => {
   return (
     <div className="flex-1 bg-gray-100">
-      <main className="h-[calc(100vh-3.5rem)]">
+      <main className="h-[calc(100vh-4rem)] overflow-auto">
         {children}
       </main>
     </div>

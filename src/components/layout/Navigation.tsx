@@ -170,106 +170,126 @@ function NavigationContent({ onNewTemplate }: NavigationProps) {
 
   return (
     <>
-      <nav className="h-14 border-b bg-white px-4 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg"></div>
-            <span className="font-semibold text-gray-900">ModuMail</span>
-            <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded font-medium">Beta</span>
-          </div>
-
-          <div className="flex items-center gap-6">
-            <Link 
-              href="/"
-              className={`text-sm font-medium ${
-                pathname === '/' ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Editor
-            </Link>
-            <Link 
-              href="/templates"
-              className={`text-sm font-medium ${
-                pathname === '/templates' ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Template Gallery
-            </Link>
-            {user && (
-              <Link
-                href="/my-templates"
-                className={`text-sm font-medium ${
-                  pathname === '/my-templates' ? 'text-blue-600' : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                My Templates
-              </Link>
-            )}
-          </div>
+      <nav className="sticky top-0 z-50 h-16 border-b bg-white px-6 flex items-center shadow-sm">
+        <div className="flex items-center w-1/3">
+          <span className="text-xl font-bold text-gray-900">ModuMail</span>
         </div>
 
-        {pathname === '/' && (
-          <div className="flex items-center gap-3">
-            <button
-              onClick={onNewTemplate}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+        <div className="flex items-center justify-center gap-1 w-1/3">
+          <Link 
+            href="/"
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+              pathname === '/' 
+                ? 'text-blue-600 bg-gray-100 bg-opacity-50' 
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+            }`}
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Editor
+          </Link>
+          <Link 
+            href="/templates"
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+              pathname === '/templates' 
+                ? 'text-blue-600 bg-gray-100 bg-opacity-50' 
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+            }`}
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            Template Gallery
+          </Link>
+          {user && (
+            <Link
+              href="/my-templates"
+              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                pathname === '/my-templates' 
+                  ? 'text-blue-600 bg-gray-100 bg-opacity-50' 
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }`}
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m-8-8h16" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-              <span>New</span>
-            </button>
+              My Templates
+            </Link>
+          )}
+        </div>
 
-            {user && (
+        <div className="flex items-center justify-end gap-3 w-1/3">
+          {pathname === '/' && (
+            <>
               <button
-                onClick={handleSaveClick}
-                disabled={isSaving}
-                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={onNewTemplate}
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m-8-8h16" />
                 </svg>
-                <span>{currentTemplate ? 'Update' : 'Save'}</span>
+                <span>New</span>
               </button>
-            )}
 
-            <button
-              onClick={handleExportHTML}
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
-            >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              <span>HTML</span>
-            </button>
-          </div>
-        )}
+              <button
+                onClick={handleExportHTML}
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-lg hover:bg-gray-50"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                <span>HTML</span>
+              </button>
 
-        {user && (
-          <div className="relative">
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
-            >
-              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                {user.email?.[0].toUpperCase()}
-              </div>
-            </button>
+              {user && (
+                <button
+                  onClick={handleSaveClick}
+                  disabled={isSaving}
+                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                  </svg>
+                  <span>{currentTemplate ? 'Update' : 'Save'}</span>
+                </button>
+              )}
+            </>
+          )}
 
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                <div className="py-1">
-                  <button
-                    onClick={handleSignOut}
-                    className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
-                  >
-                    Sign out
-                  </button>
+          {user ? (
+            <div className="relative">
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900"
+              >
+                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                  {user.email?.[0].toUpperCase()}
                 </div>
-              </div>
-            )}
-          </div>
-        )}
+              </button>
+
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                  <div className="py-1">
+                    <button
+                      onClick={handleSignOut}
+                      className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link
+              href="/auth"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700"
+            >
+              Sign in
+            </Link>
+          )}
+        </div>
       </nav>
 
       <SaveTemplateDialog

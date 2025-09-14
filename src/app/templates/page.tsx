@@ -3,11 +3,9 @@
 import React, { useState, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useBlocksStore } from '@/lib/store/blocks';
-import Image from 'next/image';
 import { templates, EmailTemplate } from '@/lib/templates/templates';
 import { Block, TextBlockProps, ButtonBlockProps, ImageBlockProps, ListBlockProps, DividerBlockProps, SpacerBlockProps, SocialBlockProps } from '@/types/blocks';
 
-type ViewMode = 'preview' | 'json' | 'html';
 type Category = 'all' | 'newsletter' | 'marketing' | 'transactional' | 'announcement';
 
 function CategoryButton({ category, active, count, onClick }: { 
@@ -20,205 +18,151 @@ function CategoryButton({ category, active, count, onClick }: {
     <button
       onClick={onClick}
       className={`
-        px-4 py-2 rounded-full text-sm font-medium transition-all
+        px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 border-2
         ${active 
-          ? 'bg-blue-100 text-blue-700 hover:bg-blue-200' 
-          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+          ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-200' 
+          : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:shadow-sm'
         }
       `}
     >
       {category.charAt(0).toUpperCase() + category.slice(1)}
-      <span className="ml-2 px-2 py-0.5 rounded-full bg-white text-xs">
+      <span className={`ml-2 px-1.5 py-0.5 rounded-full text-xs font-medium ${
+        active ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-500'
+      }`}>
         {count}
       </span>
     </button>
   );
 }
 
-function TabButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`
-        px-4 py-2 text-sm font-medium rounded-md transition-all
-        ${active
-          ? 'bg-blue-50 text-blue-700'
-          : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-        }
-      `}
-    >
-      {children}
-    </button>
-  );
-}
-
-function CodeView({ code }: { code: string }) {
-  return (
-    <div className="bg-gray-900 rounded-lg p-4 overflow-auto max-h-[500px]">
-      <pre className="text-gray-300 text-sm">
-        <code>{code}</code>
-      </pre>
-    </div>
-  );
-}
-
 function TemplateCard({ template, onUse }: { template: EmailTemplate; onUse: () => void }) {
-  const [viewMode, setViewMode] = useState<ViewMode>('preview');
-
-  const getTemplateHtml = (blocks: Block[]) => {
-    return `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
-  ${blocks.map(block => {
-    switch (block.type) {
-      case 'text': {
-        const props = block.props as TextBlockProps & { content?: string };
-        const textContent = props.content || props.text;
-        return `<div style="
-          font-size: ${props.fontSize || '16px'};
-          color: ${props.color || '#000'};
-          text-align: ${props.textAlign || 'left'};
-          font-weight: ${props.fontWeight || 'normal'};
-          line-height: 1.5;
-        ">${textContent}</div>`;
-      }
-      case 'button': {
-        const props = block.props as ButtonBlockProps;
-        return `<div style="text-align: ${props.align || 'left'};">
-          <a href="${props.url}" style="
-            display: inline-block;
-            font-size: ${props.width || '16px'};
-            color: ${props.textColor || '#fff'};
-            background-color: ${props.backgroundColor || '#000'};
-            border-radius: ${props.borderRadius || '4px'};
-            padding: 12px 24px;
-            text-decoration: none;
-            font-weight: 500;
-            width: ${props.width === 'full' ? '100%' : 'auto'};
-          ">${props.text}</a>
-        </div>`;
-      }
-      case 'image': {
-        const props = block.props as ImageBlockProps;
-        return `<img src="${props.src}" alt="${props.alt || ''}" style="
-          width: ${props.width || 'auto'};
-          height: ${props.height || 'auto'};
-          display: block;
-          margin: ${props.align === 'center' ? '0 auto' : '0'};
-        ">`;
-      }
-      case 'list': {
-        const props = block.props as ListBlockProps;
-        const listType = props.listType === 'ordered' ? 'ol' : 'ul';
-        return `<${listType} style="
-          color: ${props.color || '#000'};
-          font-size: ${props.fontSize || '16px'};
-          line-height: ${props.lineHeight || '1.5'};
-          margin: 0;
-          padding-left: 1.5em;
-        ">
-          ${props.items.map(item => `<li>${item}</li>`).join('')}
-        </${listType}>`;
-      }
-      case 'divider': {
-        const props = block.props as DividerBlockProps;
-        return `<hr style="
-          border: none;
-          border-top: ${props.width || '1px'} solid ${props.color || '#000'};
-          margin: ${props.spacing || '20px'} 0;
-        ">`;
-      }
-      case 'spacer': {
-        const props = block.props as SpacerBlockProps;
-        return `<div style="height: ${props.height || '20px'};"></div>`;
-      }
-      case 'social': {
-        const props = block.props as SocialBlockProps;
-        return `<div style="text-align: ${props.alignment || 'center'};">
-          ${props.networks.map(network => `
-            <a href="${network.url}" style="
-              display: inline-block;
-              margin: 0 8px;
-              color: ${props.iconColor || '#000'};
-              font-size: ${props.iconSize || '24px'};
-              text-decoration: none;
-            ">
-              <img src="/icons/${network.platform}.svg" alt="${network.platform}" style="
-                width: ${props.iconSize || '24px'};
-                height: ${props.iconSize || '24px'};
-              ">
-            </a>
-          `).join('')}
-        </div>`;
-      }
-      default:
-        return '';
-    }
-  }).join('\n')}
-</body>
-</html>`;
-  };
-
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-      <div className="aspect-video relative overflow-hidden bg-gray-50">
-        {viewMode === 'preview' && (
-          <Image
-            src={template.previewImage}
-            alt={template.name}
-            fill
-            className="object-cover"
-          />
-        )}
-        {viewMode === 'json' && (
-          <div className="absolute inset-0 p-4 overflow-auto">
-            <CodeView code={JSON.stringify(template.blocks, null, 2)} />
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300 group">
+      <div className="aspect-[4/3] relative overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+        {/* Email Preview Render */}
+        <div className="absolute inset-0 p-4 bg-white">
+          <div className="w-full h-full overflow-hidden border border-gray-200 rounded-lg bg-white shadow-sm">
+            <div className="p-4 h-full overflow-y-auto">
+              <div className="space-y-3">
+                {template.blocks.slice(0, 4).map((block, index) => {
+                  switch (block.type) {
+                    case 'text': {
+                      const props = block.props as TextBlockProps & { content?: string };
+                      const textContent = props.content || props.text;
+                      return (
+                        <div
+                          key={block.id}
+                          className="text-sm leading-relaxed"
+                          style={{
+                            color: props.color || '#374151',
+                            textAlign: props.textAlign || 'left',
+                            fontWeight: props.fontWeight || 'normal',
+                          }}
+                        >
+                          {textContent}
+                        </div>
+                      );
+                    }
+                    case 'button': {
+                      const props = block.props as ButtonBlockProps;
+                      return (
+                        <div
+                          key={block.id}
+                          className="flex"
+                          style={{
+                            justifyContent: props.align === 'center' ? 'center' : props.align === 'right' ? 'flex-end' : 'flex-start',
+                          }}
+                        >
+                          <div
+                            className="px-4 py-2 text-sm font-medium rounded-md"
+                            style={{
+                              color: props.textColor || '#fff',
+                              backgroundColor: props.backgroundColor || '#3b82f6',
+                              borderRadius: `${props.borderRadius || 6}px`,
+                            }}
+                          >
+                            {props.text}
+                          </div>
+                        </div>
+                      );
+                    }
+                    case 'image': {
+                      const props = block.props as ImageBlockProps;
+                      return (
+                        <div
+                          key={block.id}
+                          className="flex"
+                          style={{
+                            justifyContent: props.align === 'center' ? 'center' : props.align === 'right' ? 'flex-end' : 'flex-start',
+                          }}
+                        >
+                          <div
+                            className="bg-gray-100 rounded-md flex items-center justify-center text-gray-500 text-xs"
+                            style={{
+                              width: props.width === 'full' ? '100%' : '120px',
+                              height: '60px',
+                            }}
+                          >
+                            📧 Image
+                          </div>
+                        </div>
+                      );
+                    }
+                    case 'divider': {
+                      const props = block.props as DividerBlockProps;
+                      return (
+                        <hr
+                          key={block.id}
+                          className="border-0"
+                          style={{
+                            borderTop: `${props.width || 1}px solid ${props.color || '#e5e7eb'}`,
+                            margin: `${props.spacing || 16}px 0`,
+                          }}
+                        />
+                      );
+                    }
+                    case 'spacer': {
+                      const props = block.props as SpacerBlockProps;
+                      return (
+                        <div
+                          key={block.id}
+                          style={{
+                            height: `${props.height || 16}px`,
+                          }}
+                        />
+                      );
+                    }
+                    default:
+                      return null;
+                  }
+                })}
+                {template.blocks.length > 4 && (
+                  <div className="text-xs text-gray-400 text-center py-2">
+                    +{template.blocks.length - 4} more blocks
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-        )}
-        {viewMode === 'html' && (
-          <div className="absolute inset-0 p-4 overflow-auto">
-            <CodeView code={getTemplateHtml(template.blocks)} />
-          </div>
-        )}
-        <div className="absolute top-4 right-4 flex gap-2 bg-white/80 backdrop-blur-sm p-1 rounded-lg">
-          <TabButton
-            active={viewMode === 'preview'}
-            onClick={() => setViewMode('preview')}
-          >
-            Preview
-          </TabButton>
-          <TabButton
-            active={viewMode === 'json'}
-            onClick={() => setViewMode('json')}
-          >
-            JSON
-          </TabButton>
-          <TabButton
-            active={viewMode === 'html'}
-            onClick={() => setViewMode('html')}
-          >
-            HTML
-          </TabButton>
         </div>
-        <div className="absolute bottom-4 left-4">
-          <span className="px-2 py-1 rounded-full text-xs font-medium bg-white text-gray-800">
+        
+        {/* Category badge */}
+        <div className="absolute bottom-2 left-2">
+          <span className="px-2 py-1 rounded-full text-xs font-medium bg-white/95 backdrop-blur-sm text-gray-800 shadow-sm">
             {template.category}
           </span>
         </div>
       </div>
       
-      <div className="p-4 flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900">{template.name}</h3>
-          <p className="text-sm text-gray-600">{template.description}</p>
+      <div className="p-4">
+        <div className="mb-3">
+          <h3 className="text-lg font-bold text-gray-900 mb-1">{template.name}</h3>
+          <p className="text-sm text-gray-600 leading-relaxed">{template.description}</p>
         </div>
+        
         <button
           onClick={onUse}
-          className="shrink-0 ml-4 px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors whitespace-nowrap"
+          className="w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-md hover:shadow-lg"
         >
           Use Template
         </button>
@@ -268,25 +212,33 @@ function TemplatesPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-6">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-semibold text-gray-900">Email Templates</h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-3">Email Templates</h1>
+          <p className="text-base text-gray-600 max-w-xl mx-auto">
+            Choose from our collection of professionally designed email templates to get started quickly
+          </p>
         </div>
 
-        <div className="flex gap-3 mb-6 overflow-x-auto pb-2">
-          {(['all', 'newsletter', 'marketing', 'transactional', 'announcement'] as const).map((category) => (
-            <CategoryButton
-              key={category}
-              category={category}
-              active={selectedCategory === category}
-              count={categoryCount[category]}
-              onClick={() => setSelectedCategory(category)}
-            />
-          ))}
+        {/* Category Filters */}
+        <div className="flex justify-center mb-8">
+          <div className="flex gap-2 overflow-x-auto pb-2 px-4">
+            {(['all', 'newsletter', 'marketing', 'transactional', 'announcement'] as const).map((category) => (
+              <CategoryButton
+                key={category}
+                category={category}
+                active={selectedCategory === category}
+                count={categoryCount[category]}
+                onClick={() => setSelectedCategory(category)}
+              />
+            ))}
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Template Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredTemplates.map((template) => (
             <TemplateCard
               key={template.id}
@@ -303,18 +255,35 @@ function TemplatesPageContent() {
 export default function TemplatesPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-6">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/4 mb-6"></div>
-            <div className="flex gap-3 mb-6">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="h-10 bg-gray-200 rounded-full w-24"></div>
-              ))}
+            {/* Header skeleton */}
+            <div className="text-center mb-8">
+              <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto mb-3"></div>
+              <div className="h-5 bg-gray-200 rounded w-1/2 mx-auto"></div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="bg-gray-200 rounded-xl h-64"></div>
+            
+            {/* Category filters skeleton */}
+            <div className="flex justify-center mb-8">
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="h-10 bg-gray-200 rounded-lg w-24"></div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Template cards skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="bg-white rounded-xl shadow-lg overflow-hidden">
+                  <div className="aspect-[4/3] bg-gray-200"></div>
+                  <div className="p-4">
+                    <div className="h-5 bg-gray-200 rounded w-3/4 mb-1"></div>
+                    <div className="h-4 bg-gray-200 rounded w-full mb-3"></div>
+                    <div className="h-10 bg-gray-200 rounded-lg w-full"></div>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
