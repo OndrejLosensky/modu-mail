@@ -7,14 +7,25 @@ import { Database } from '@/types/supabase'
 
 type Template = Database['public']['Tables']['templates']['Row']
 
-export default function PreviewPage({ params }: { params: { id: string } }) {
+export default function PreviewPage({ params }: { params: Promise<{ id: string }> }) {
   const [template, setTemplate] = useState<Template | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [templateId, setTemplateId] = useState<string | null>(null)
   const supabase = createClient()
   const router = useRouter()
 
   useEffect(() => {
+    const getParams = async () => {
+      const resolvedParams = await params
+      setTemplateId(resolvedParams.id)
+    }
+    getParams()
+  }, [params])
+
+  useEffect(() => {
+    if (!templateId) return
+
     const fetchTemplate = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser()
@@ -27,7 +38,7 @@ export default function PreviewPage({ params }: { params: { id: string } }) {
         const { data, error } = await supabase
           .from('templates')
           .select('*')
-          .eq('id', params.id)
+          .eq('id', templateId)
           .single()
 
         if (error) throw error
@@ -44,7 +55,7 @@ export default function PreviewPage({ params }: { params: { id: string } }) {
     }
 
     fetchTemplate()
-  }, [supabase, params.id, router])
+  }, [supabase, templateId, router])
 
   if (isLoading) {
     return (
