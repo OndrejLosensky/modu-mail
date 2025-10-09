@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📧 ModuMail
 
-## Getting Started
+---
 
-First, run the development server:
+[![version](https://img.shields.io/badge/version-1.0-blue.svg)](https://github.com/your-repo/modumail)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+A simple email template builder prototype. Drag and drop components to create email layouts, pick from some basic templates, and see how it looks in preview mode.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Quick Links
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+• [Features](#features) • [Screenshots](#screenshots) • [Getting Started](#getting-started)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
+- **Drag & Drop Builder** - Simple component panel with text blocks, buttons, images, and spacers
+- **Template Gallery** - A few basic email templates to get started quickly
+- **Live Preview** - See how your email looks as you build it
+- **Component Properties** - Basic styling options like colors, fonts, and alignment
+- **Template Categories** - Filter templates by type (newsletter, marketing, etc.)
 
-To learn more about Next.js, take a look at the following resources:
+## Screenshots
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Email Editor Interface
+<img width="800" height="450" alt="moduMail00" src="https://github.com/user-attachments/assets/2192a896-0383-4b21-aef7-82471b01ed95" />
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+*Basic drag-and-drop interface with components on the left, canvas in the middle, and properties on the right*
 
-## Deploy on Vercel
+### Email Preview
+<img width="800" height="450" alt="moduMail02" src="https://github.com/user-attachments/assets/18143d27-76d8-4f06-8866-538fd856676e" />
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+*Preview window showing how the email will look*
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Template Gallery
+<img width="800" height="450" alt="moduMail03" src="https://github.com/user-attachments/assets/b264f286-eae9-4f92-a5d9-0887fa8b47df" />
+
+*Simple template browser with basic categories*
+
